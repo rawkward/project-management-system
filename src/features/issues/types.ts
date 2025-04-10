@@ -38,7 +38,16 @@ export type Issue = {
 
 export type IssueFormValues = Omit<Issue, "id" | "boardName">;
 
-export type Project = Pick<Issue, "id" | "boardName">;
+export type Board = {
+  id: number;
+  name: string;
+};
+
+export type User = {
+  id: number;
+  fullName: string;
+  avatarUrl: string;
+};
 
 export type Option = {
   value: string | number;

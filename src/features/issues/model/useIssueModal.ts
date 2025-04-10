@@ -1,6 +1,6 @@
-import {useState} from "react";
+import { useState } from "react";
 import { Issue } from "../types";
-import {useLocation, useParams} from "react-router";
+import { useLocation, useParams } from "react-router";
 
 type ModalState = {
   mode: "create" | "edit";
@@ -21,7 +21,9 @@ export const useIssueModal = () => {
 
   const closeModal = () => setModalState(null);
 
-  const sourcePage: "boards" | "issues" = location.pathname.includes("boards") ? "boards" : "issues";
+  const sourcePage: "boards" | "issues" = location.pathname.includes("boards")
+    ? "boards"
+    : "issues";
 
   return {
     modalState: {

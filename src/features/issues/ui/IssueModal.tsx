@@ -1,13 +1,29 @@
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { IssueSchema } from "../model/schema";
 import { useEffect } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Issue, IssueFormValues } from "../types";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Modal } from "@/shared/ui/modal/Modal";
-import {Box, Button, TextField, Typography} from "@mui/material";
+import { Box, Button, TextField, Typography } from "@mui/material";
+import { AsyncSelect } from "@/shared/ui/selector/AsyncSelect.tsx";
+import { Issue, IssueFormValues } from "../types";
+import { IssueSchema } from "@/features/issues/model/schema.ts";
+//import { createIssue, updateIssue } from "../api/issue-api";
+import { fetchBoards } from "@/features/boards/api/board-api.ts";
+import { fetchUsers } from "@/features/users/api/user-api.ts";
 import { Link } from "react-router";
-//import { createIssue, updateIssue } from "../api/issueApi";
+
+const PRIORITY_OPTIONS = [
+  { value: "high", label: "Высокий" },
+  { value: "medium", label: "Средний" },
+  { value: "low", label: "Низкий" },
+];
+
+const STATUS_OPTIONS = [
+  { value: "backlog", label: "Бэклог" },
+  { value: "todo", label: "К выполнению" },
+  { value: "in_progress", label: "В работе" },
+  { value: "done", label: "Готово" },
+];
 
 type IssueModalProps = {
   mode: "create" | "edit";
@@ -24,44 +40,64 @@ export const IssueModal = ({
   sourcePage,
   onClose,
 }: IssueModalProps) => {
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    setValue,
-  } = useForm<IssueFormValues>({
-    resolver: zodResolver(IssueSchema),
-    defaultValues: {
-      ...initialData,
-      boardId: currentBoardId || initialData?.boardId,
-    },
+  const { control, handleSubmit, formState, setValue } =
+    useForm<IssueFormValues>({
+      resolver: zodResolver(IssueSchema),
+      defaultValues: {
+        ...initialData,
+        boardId: currentBoardId ?? initialData?.boardId,
+      },
+    });
+
+  const { errors } = formState;
+
+  // Загрузка проектов и пользователей
+  const { data: boards = [], isLoading: isBoardsLoading } = useQuery({
+    queryKey: ["boards"],
+    queryFn: fetchBoards,
   });
 
+  const { data: users = [], isLoading: isUsersLoading } = useQuery({
+    queryKey: ["users"],
+    queryFn: fetchUsers,
+  });
+
+  // Подготовка опций
+  const boardOptions = boards.map((p) => ({
+    value: p.id,
+    label: p.name,
+  }));
+
+  const userOptions = users.map((u) => ({
+    value: u.id,
+    label: u.fullName,
+  }));
+
+  // Автозаполнение boardId
   useEffect(() => {
-    if (currentBoardId) {
-      setValue("boardId", currentBoardId);
-    }
+    if (currentBoardId) setValue("boardId", currentBoardId);
   }, [currentBoardId]);
 
   const queryClient = useQueryClient();
 
   const { mutateAsync } = useMutation<void, Error, IssueFormValues>({
-    mutationFn: mode === "create" ? createIssue : updateIssue,
+    mutationFn: (data) =>
+      mode === "create" ? createIssue(data) : updateIssue(data), // Явная передача данных
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["issues"] });
       onClose();
     },
   });
 
-  const handleFormSubmit = (data: IssueFormValues) => mutateAsync(data);
-
   return (
     <Modal open onClose={onClose}>
-      <Box sx={{ p: 4 }} color={"blue"}>
+      <Box sx={{ p: 4 }}>
         <Typography variant="h6" gutterBottom>
-          {mode === "create" ? "Создание задачи" : "Редактирование задачи"}
+          {mode === "create" ? "Создать задачу" : "Редактировать задачу"}
         </Typography>
-        <form onSubmit={handleSubmit(handleFormSubmit)}>
+
+        <form onSubmit={handleSubmit((data) => mutateAsync(data))}>
+          {/* Название */}
           <Controller
             name="title"
             control={control}
@@ -77,6 +113,7 @@ export const IssueModal = ({
             )}
           />
 
+          {/* Описание */}
           <Controller
             name="description"
             control={control}
@@ -85,28 +122,55 @@ export const IssueModal = ({
                 {...field}
                 label="Описание"
                 error={!!errors.description}
-                helperText={errors.title?.message}
+                helperText={errors.description?.message}
                 multiline
                 rows={3}
+                fullWidth
                 margin="normal"
               />
             )}
           />
 
-          <Controller
-            name="boardId"
+          {/* Проект */}
+          <AsyncSelect
             control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                select
-                label="Проект"
-                disabled={!!currentBoardId}
-                margin="normal"
-              />
-            )}
+            name="boardId"
+            label="Проект"
+            options={boardOptions}
+            isLoading={isBoardsLoading}
+            error={errors.boardId}
+            disabled={!!currentBoardId}
           />
 
+          {/* Приоритет */}
+          <AsyncSelect
+            control={control}
+            name="priority"
+            label="Приоритет"
+            options={PRIORITY_OPTIONS}
+            error={errors.priority}
+          />
+
+          {/* Статус */}
+          <AsyncSelect
+            control={control}
+            name="status"
+            label="Статус"
+            options={STATUS_OPTIONS}
+            error={errors.status}
+          />
+
+          {/* Исполнитель */}
+          <AsyncSelect
+            control={control}
+            name="assigneeId"
+            label="Исполнитель"
+            options={userOptions}
+            isLoading={isUsersLoading}
+            error={errors.assigneeId}
+          />
+
+          {/* Кнопки действий */}
           <Box sx={{ mt: 3, display: "flex", gap: 2 }}>
             {sourcePage !== "boards" && (
               <Button
@@ -118,7 +182,6 @@ export const IssueModal = ({
                 Перейти на доску
               </Button>
             )}
-
             <Button type="submit" variant="contained" sx={{ ml: "auto" }}>
               {mode === "create" ? "Создать" : "Обновить"}
             </Button>

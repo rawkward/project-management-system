@@ -5,14 +5,14 @@ import { useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Issue, IssueFormValues } from "../types";
 import { Modal } from "@/shared/ui/modal/Modal";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import {Box, Button, TextField, Typography} from "@mui/material";
 import { Link } from "react-router";
-import { createIssue, updateIssue } from "../api/issueApi";
+//import { createIssue, updateIssue } from "../api/issueApi";
 
 type IssueModalProps = {
   mode: "create" | "edit";
   initialData?: Partial<Issue>;
-  currentBoardId?: string;
+  currentBoardId?: number;
   sourcePage?: "boards" | "issues";
   onClose: () => void;
 };
@@ -36,7 +36,7 @@ export const IssueModal = ({
       boardId: currentBoardId || initialData?.boardId,
     },
   });
-//TODO: fix type errors
+
   useEffect(() => {
     if (currentBoardId) {
       setValue("boardId", currentBoardId);
@@ -48,7 +48,7 @@ export const IssueModal = ({
   const { mutateAsync } = useMutation<void, Error, IssueFormValues>({
     mutationFn: mode === "create" ? createIssue : updateIssue,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["issues"] }); // Исправьте ключ на "issues"
+      queryClient.invalidateQueries({ queryKey: ["issues"] });
       onClose();
     },
   });
@@ -57,25 +57,11 @@ export const IssueModal = ({
 
   return (
     <Modal open onClose={onClose}>
-      <Box sx={{ p: 4 }}>
+      <Box sx={{ p: 4 }} color={"blue"}>
         <Typography variant="h6" gutterBottom>
           {mode === "create" ? "Создание задачи" : "Редактирование задачи"}
         </Typography>
         <form onSubmit={handleSubmit(handleFormSubmit)}>
-          <Controller
-            name="boardId"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                label="Проект"
-                disabled={!!currentBoardId}
-                fullWidth
-                margin="normal"
-              />
-            )}
-          />
-
           <Controller
             name="title"
             control={control}
@@ -86,6 +72,36 @@ export const IssueModal = ({
                 error={!!errors.title}
                 helperText={errors.title?.message}
                 fullWidth
+                margin="normal"
+              />
+            )}
+          />
+
+          <Controller
+            name="description"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Описание"
+                error={!!errors.description}
+                helperText={errors.title?.message}
+                multiline
+                rows={3}
+                margin="normal"
+              />
+            )}
+          />
+
+          <Controller
+            name="boardId"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                select
+                label="Проект"
+                disabled={!!currentBoardId}
                 margin="normal"
               />
             )}

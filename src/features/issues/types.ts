@@ -1,29 +1,29 @@
 // Базовый тип ответа API
-type ApiResponse<T> = {
+export type ApiResponse<T> = {
   data: T;
 };
 
-// Полная структура задачи из API
+// Ответы API
+export type ApiIssueResponse = ApiResponse<ApiIssue>;
+export type ApiIssuesResponse = ApiResponse<ApiIssue[]>;
+
+type ApiAssignee = {
+  id: number;
+  fullName: string;
+  email: string;
+  avatarUrl: string;
+};
+
 export type ApiIssue = {
   id: number;
   title: string;
   description?: string;
   priority: "High" | "Medium" | "Low";
   status: "Backlog" | "Todo" | "InProgress" | "Done";
-  assigneeId: number;
-  assignee: {
-    id: number;
-    fullName: string;
-    email: string;
-    avatarUrl: string;
-  };
+  assignee: ApiAssignee;
   boardId: number;
   boardName: string;
 };
-
-// Ответы API
-export type ApiIssueResponse = ApiResponse<ApiIssue>;
-export type ApiIssuesResponse = ApiResponse<ApiIssue[]>;
 
 export type Issue = {
   id: number;
@@ -36,11 +36,11 @@ export type Issue = {
   boardName: string;
 };
 
-export type IssueFormValues = {
-  title: string;
-  description?: string;
-  priority: "high" | "medium" | "low";
-  status: "backlog" | "todo" | "in_progress" | "done";
-  assigneeId: number;
-  boardId: number;
+export type IssueFormValues = Omit<Issue, "id" | "boardName">;
+
+export type Project = Pick<Issue, "id" | "boardName">;
+
+export type Option = {
+  value: string | number;
+  label: string;
 };

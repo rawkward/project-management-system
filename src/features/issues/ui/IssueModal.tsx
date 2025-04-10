@@ -36,7 +36,7 @@ export const IssueModal = ({
       boardId: currentBoardId || initialData?.boardId,
     },
   });
-
+//TODO: fix type errors
   useEffect(() => {
     if (currentBoardId) {
       setValue("boardId", currentBoardId);

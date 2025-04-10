@@ -1,8 +1,10 @@
 import { useIssueModal } from "@/features/issues/model/useIssueModal.ts";
 import { IssueModal } from "@/features/issues/ui/IssueModal.tsx";
 
-export const TaskModalProvider = () => {
+export const IssueModalProvider = () => {
   const { modalState, closeModal } = useIssueModal();
+
+  if (!modalState || !modalState.mode) return null;
 
   return modalState ? (
     <IssueModal

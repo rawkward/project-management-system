@@ -36,7 +36,14 @@ export type Issue = {
   boardName: string;
 };
 
-export type IssueFormValues = Omit<Issue, "id" | "boardName">;
+export type IssueFormValues = {
+  title: string;
+  description?: string | null;
+  priority: "high" | "medium" | "low";
+  status: "backlog" | "todo" | "in_progress" | "done";
+  assigneeId?: number | null;
+  boardId: number;
+};
 
 export type Board = {
   id: number;

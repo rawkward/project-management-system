@@ -44,6 +44,10 @@ export const IssueModal = ({
     useForm<IssueFormValues>({
       resolver: zodResolver(IssueSchema),
       defaultValues: {
+        title: '',
+        description: '',
+        priority: 'medium',
+        status: 'backlog',
         ...initialData,
         boardId: currentBoardId ?? initialData?.boardId,
       },
@@ -73,10 +77,13 @@ export const IssueModal = ({
     label: u.fullName,
   }));
 
-  // Автозаполнение boardId
   useEffect(() => {
-    if (currentBoardId) setValue("boardId", currentBoardId);
-  }, [currentBoardId]);
+    if (currentBoardId) {
+      setValue("boardId", currentBoardId);
+    } else if (initialData?.boardId) {
+      setValue("boardId", initialData.boardId);
+    }
+  }, [currentBoardId, initialData?.boardId, setValue]);
 
   const queryClient = useQueryClient();
 

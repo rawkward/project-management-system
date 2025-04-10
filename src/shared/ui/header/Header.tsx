@@ -1,9 +1,8 @@
 import { Link } from "react-router";
 import { AppBar, Button, Container, Toolbar } from "@mui/material";
-import {useIssueModal} from "@/features/issues/model/useIssueModal.ts";
+import { useIssueModal } from "@/features/issues/model/use-issue-modal.ts";
 
 export const Header = () => {
-
   const { openModal } = useIssueModal();
 
   return (
@@ -16,7 +15,12 @@ export const Header = () => {
           <Button component={Link} to="/boards" color="inherit">
             Проекты
           </Button>
-          <Button variant="contained" sx={{ ml: "auto" }} color="inherit" onClick={() => openModal("create")}>
+          <Button
+            variant="contained"
+            sx={{ ml: "auto" }}
+            color="inherit"
+            onClick={() => openModal("create")}
+          >
             Создать задачу
           </Button>
         </Toolbar>

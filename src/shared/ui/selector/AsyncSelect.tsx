@@ -33,32 +33,40 @@ export const AsyncSelect = <T extends FieldValues>({
     <Controller
       control={control}
       name={name}
-      render={({ field }) => (
-        <TextField
-          {...field}
-          {...textFieldProps}
-          select
-          label={label}
-          fullWidth
-          margin="normal"
-          disabled={disabled || isLoading}
-          error={!!error || isLoading}
-          helperText={error?.message}
-          value={isLoading ? "" : field.value} // Чтобы избежать предупреждений MUI
-        >
-          {isLoading ? (
-            <MenuItem disabled>
-              <CircularProgress size={20} />
-            </MenuItem>
-          ) : (
-            options.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
+      render={({ field }) => {
+        const currentValue =
+          options.find((opt) => opt.value === field.value)?.value || "";
+
+        const displayValue = isLoading ? "" : currentValue;
+
+        return (
+          <TextField
+            {...field}
+            {...textFieldProps}
+            select
+            label={label}
+            fullWidth
+            margin="normal"
+            disabled={disabled || isLoading}
+            error={!!error || isLoading}
+            helperText={error?.message}
+            value={displayValue}
+            onChange={(e) => field.onChange(e.target.value)}
+          >
+            {isLoading ? (
+              <MenuItem disabled value="">
+                <CircularProgress size={20} />
               </MenuItem>
-            ))
-          )}
-        </TextField>
-      )}
+            ) : (
+              options.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))
+            )}
+          </TextField>
+        );
+      }}
     />
   );
 };

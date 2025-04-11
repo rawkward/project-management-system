@@ -11,6 +11,7 @@ import { IssueSchema } from "@/features/issues/model/schema.ts";
 import { fetchBoards } from "@/features/boards/api/board-api.ts";
 import { fetchUsers } from "@/features/users/api/user-api.ts";
 import { Link } from "react-router";
+import { SelectSkeleton } from "@/shared/ui/skeletons/SelectSkeleton.tsx";
 
 const PRIORITY_OPTIONS = [
   { value: "high", label: "Высокий" },
@@ -44,10 +45,10 @@ export const IssueModal = ({
     useForm<IssueFormValues>({
       resolver: zodResolver(IssueSchema),
       defaultValues: {
-        title: '',
-        description: '',
-        priority: 'medium',
-        status: 'backlog',
+        title: "",
+        description: "",
+        priority: "medium",
+        status: "backlog",
         ...initialData,
         boardId: currentBoardId ?? initialData?.boardId,
       },
@@ -55,7 +56,6 @@ export const IssueModal = ({
 
   const { errors } = formState;
 
-  // Загрузка проектов и пользователей
   const { data: boards = [], isLoading: isBoardsLoading } = useQuery({
     queryKey: ["boards"],
     queryFn: fetchBoards,
@@ -66,7 +66,6 @@ export const IssueModal = ({
     queryFn: fetchUsers,
   });
 
-  // Подготовка опций
   const boardOptions = boards.map((p) => ({
     value: p.id,
     label: p.name,
@@ -89,7 +88,7 @@ export const IssueModal = ({
 
   const { mutateAsync } = useMutation<void, Error, IssueFormValues>({
     mutationFn: (data) =>
-      mode === "create" ? createIssue(data) : updateIssue(data), // Явная передача данных
+      mode === "create" ? createIssue(data) : updateIssue(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["issues"] });
       onClose();
@@ -104,7 +103,6 @@ export const IssueModal = ({
         </Typography>
 
         <form onSubmit={handleSubmit((data) => mutateAsync(data))}>
-          {/* Название */}
           <Controller
             name="title"
             control={control}
@@ -120,7 +118,6 @@ export const IssueModal = ({
             )}
           />
 
-          {/* Описание */}
           <Controller
             name="description"
             control={control}
@@ -138,18 +135,20 @@ export const IssueModal = ({
             )}
           />
 
-          {/* Проект */}
-          <AsyncSelect
-            control={control}
-            name="boardId"
-            label="Проект"
-            options={boardOptions}
-            isLoading={isBoardsLoading}
-            error={errors.boardId}
-            disabled={!!currentBoardId}
-          />
+          {isBoardsLoading ? (
+            <SelectSkeleton/>
+          ) : (
+            <AsyncSelect
+              control={control}
+              name="boardId"
+              label="Проект"
+              options={boardOptions}
+              isLoading={isBoardsLoading}
+              error={errors.boardId}
+              disabled={!!currentBoardId}
+            />
+          )}
 
-          {/* Приоритет */}
           <AsyncSelect
             control={control}
             name="priority"
@@ -158,7 +157,6 @@ export const IssueModal = ({
             error={errors.priority}
           />
 
-          {/* Статус */}
           <AsyncSelect
             control={control}
             name="status"
@@ -167,17 +165,19 @@ export const IssueModal = ({
             error={errors.status}
           />
 
-          {/* Исполнитель */}
-          <AsyncSelect
-            control={control}
-            name="assigneeId"
-            label="Исполнитель"
-            options={userOptions}
-            isLoading={isUsersLoading}
-            error={errors.assigneeId}
-          />
+          {isUsersLoading ? (
+            <SelectSkeleton/>
+          ) : (
+            <AsyncSelect
+              control={control}
+              name="assigneeId"
+              label="Исполнитель"
+              options={userOptions}
+              isLoading={isUsersLoading}
+              error={errors.assigneeId}
+            />
+          )}
 
-          {/* Кнопки действий */}
           <Box sx={{ mt: 3, display: "flex", gap: 2 }}>
             {sourcePage !== "boards" && (
               <Button

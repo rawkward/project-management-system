@@ -29,8 +29,8 @@ export type Issue = {
   id: number;
   title: string;
   description?: string;
-  priority: "high" | "medium" | "low";
-  status: "backlog" | "todo" | "in_progress" | "done";
+  priority: 'Low' | 'Medium' | 'High';
+  status: 'Backlog' | 'Todo' | 'InProgress' | 'Done';
   assigneeId: number;
   boardId: number;
   boardName: string;
@@ -38,9 +38,9 @@ export type Issue = {
 
 export type IssueFormValues = {
   title: string;
-  description?: string | null;
-  priority: "high" | "medium" | "low";
-  status: "backlog" | "todo" | "in_progress" | "done";
+  description?: string;
+  priority: 'low' | 'medium' | 'high';
+  status: 'backlog' | 'todo' | 'in_progress' | 'done';
   assigneeId?: number | null;
   boardId: number;
 };

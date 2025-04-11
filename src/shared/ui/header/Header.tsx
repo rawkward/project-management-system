@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { AppBar, Button, Container, Toolbar } from "@mui/material";
-import { useIssueModal } from "@/features/issues/model/use-issue-modal.ts";
+import { useIssueModal } from "@/features/issues/hooks/useIssueModal.ts";
 
 export const Header = () => {
   const { openModal } = useIssueModal();

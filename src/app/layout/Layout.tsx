@@ -2,7 +2,7 @@
 import { Header } from "@/shared/ui/header/Header";
 import { ReactNode } from "react";
 import { IssueModal } from "@/features/issues/ui/IssueModal.tsx";
-import { useIssueModal } from "@/features/issues/model/use-issue-modal.ts";
+import { useIssueModal } from "@/features/issues/hooks/useIssueModal.ts";
 
 export const Layout = ({ children }: { children: ReactNode }) => {
   const { modalState, closeModal } = useIssueModal();

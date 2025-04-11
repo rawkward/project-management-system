@@ -7,9 +7,18 @@ import {
 import { mapApiIssueToIssue } from "@/features/issues/model/lib/mappers.ts";
 import { apiClient } from "@/shared/api/base-api.ts";
 
-export const fetchAllIssues = async (): Promise<Issue[]> => {
+// export const fetchAllIssues = async (): Promise<Issue[]> => {
+//   const response = await apiClient<ApiIssuesResponse>("/tasks");
+//   return response.data.map(mapApiIssueToIssue);
+// };
+
+export const fetchIssues = async (): Promise<Issue[]> => {
   const response = await apiClient<ApiIssuesResponse>("/tasks");
-  return response.data.map(mapApiIssueToIssue);
+  return response.data.map(issue => ({
+    ...issue,
+    assigneeId: issue.assignee.id,
+    boardName: issue.boardName || "Без проекта"
+  }));
 };
 
 export const fetchIssue = async (id: number): Promise<Issue> => {
@@ -41,4 +50,9 @@ export const updateIssueStatus = async (
     method: "PUT",
     body: JSON.stringify({ newStatus }),
   });
+};
+
+export const searchIssues = async (query: string): Promise<Issue[]> => {
+  const response = await apiClient<ApiIssuesResponse>(`/tasks/search?q=${query}`);
+  return response.data;
 };

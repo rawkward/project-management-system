@@ -1,16 +1,15 @@
-import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Modal } from "@/shared/ui/modal/Modal";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { AsyncSelect } from "@/shared/ui/selector/AsyncSelect.tsx";
 import { Issue, IssueFormValues } from "../types";
-import { IssueSchema } from "@/features/issues/model/schema.ts";
-import {createIssue, fetchIssue, updateIssue} from "../api/issue-api";
+import { createIssue, fetchIssue, updateIssue } from "../api/issue-api";
 import { fetchBoards } from "@/features/boards/api/board-api.ts";
 import { fetchUsers } from "@/features/users/api/user-api.ts";
 import { Link } from "react-router";
 import { SelectSkeleton } from "@/shared/ui/skeletons/SelectSkeleton.tsx";
+import { useDraftIssue } from "@/features/issues/hooks/useDraftIssue.ts";
 
 const PRIORITY_OPTIONS = [
   { value: "High", label: "Высокий" },
@@ -40,18 +39,9 @@ export const IssueModal = ({
   sourcePage,
   onClose,
 }: IssueModalProps) => {
-  const { control, handleSubmit, formState } = useForm<IssueFormValues>({
-    resolver: zodResolver(IssueSchema),
-    defaultValues: {
-      title: "",
-      description: "",
-      priority: "Medium",
-      status: "Backlog",
-      boardId: currentBoardId ?? initialData?.boardId ?? 0,
-      assigneeId: initialData?.assigneeId ?? 0,
-    },
-  });
+  const form = useDraftIssue(mode);
 
+  const { control, handleSubmit, formState } = form;
   const { errors } = formState;
 
   const { data: boards = [], isLoading: isBoardsLoading } = useQuery({
@@ -104,6 +94,7 @@ export const IssueModal = ({
           onSubmit={handleSubmit(async (data: IssueFormValues) => {
             try {
               await mutateAsync(data);
+              localStorage.removeItem("issue-draft");
             } catch (error) {
               console.error("Ошибка сохранения:", error);
             }

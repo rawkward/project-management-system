@@ -1,29 +1,28 @@
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Modal } from "@/shared/ui/modal/Modal";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { AsyncSelect } from "@/shared/ui/selector/AsyncSelect.tsx";
 import { Issue, IssueFormValues } from "../types";
 import { IssueSchema } from "@/features/issues/model/schema.ts";
-//import { createIssue, updateIssue } from "../api/issue-api";
+import {createIssue, fetchIssue, updateIssue} from "../api/issue-api";
 import { fetchBoards } from "@/features/boards/api/board-api.ts";
 import { fetchUsers } from "@/features/users/api/user-api.ts";
 import { Link } from "react-router";
 import { SelectSkeleton } from "@/shared/ui/skeletons/SelectSkeleton.tsx";
 
 const PRIORITY_OPTIONS = [
-  { value: "high", label: "Высокий" },
-  { value: "medium", label: "Средний" },
-  { value: "low", label: "Низкий" },
+  { value: "High", label: "Высокий" },
+  { value: "Medium", label: "Средний" },
+  { value: "Low", label: "Низкий" },
 ];
 
 const STATUS_OPTIONS = [
-  { value: "backlog", label: "Бэклог" },
-  { value: "todo", label: "К выполнению" },
-  { value: "in_progress", label: "В работе" },
-  { value: "done", label: "Готово" },
+  { value: "Backlog", label: "Бэклог" },
+  { value: "Todo", label: "К выполнению" },
+  { value: "InProgress", label: "В работе" },
+  { value: "Done", label: "Готово" },
 ];
 
 type IssueModalProps = {
@@ -41,18 +40,17 @@ export const IssueModal = ({
   sourcePage,
   onClose,
 }: IssueModalProps) => {
-  const { control, handleSubmit, formState, setValue } =
-    useForm<IssueFormValues>({
-      resolver: zodResolver(IssueSchema),
-      defaultValues: {
-        title: "",
-        description: "",
-        priority: "medium",
-        status: "backlog",
-        ...initialData,
-        boardId: currentBoardId ?? initialData?.boardId,
-      },
-    });
+  const { control, handleSubmit, formState } = useForm<IssueFormValues>({
+    resolver: zodResolver(IssueSchema),
+    defaultValues: {
+      title: "",
+      description: "",
+      priority: "Medium",
+      status: "Backlog",
+      boardId: currentBoardId ?? initialData?.boardId ?? 0,
+      assigneeId: initialData?.assigneeId ?? 0,
+    },
+  });
 
   const { errors } = formState;
 
@@ -76,19 +74,19 @@ export const IssueModal = ({
     label: u.fullName,
   }));
 
-  useEffect(() => {
-    if (currentBoardId) {
-      setValue("boardId", currentBoardId);
-    } else if (initialData?.boardId) {
-      setValue("boardId", initialData.boardId);
-    }
-  }, [currentBoardId, initialData?.boardId, setValue]);
-
   const queryClient = useQueryClient();
 
-  const { mutateAsync } = useMutation<void, Error, IssueFormValues>({
-    mutationFn: (data) =>
-      mode === "create" ? createIssue(data) : updateIssue(data),
+  const { mutateAsync } = useMutation({
+    mutationFn: async (data: IssueFormValues) => {
+      if (mode === "create") {
+        const newId = await createIssue(data);
+        return fetchIssue(newId);
+      } else {
+        if (!initialData?.id) throw new Error("ID задачи не указан");
+        await updateIssue(initialData.id, data);
+        return fetchIssue(initialData.id);
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["issues"] });
       onClose();
@@ -102,7 +100,15 @@ export const IssueModal = ({
           {mode === "create" ? "Создать задачу" : "Редактировать задачу"}
         </Typography>
 
-        <form onSubmit={handleSubmit((data) => mutateAsync(data))}>
+        <form
+          onSubmit={handleSubmit(async (data: IssueFormValues) => {
+            try {
+              await mutateAsync(data);
+            } catch (error) {
+              console.error("Ошибка сохранения:", error);
+            }
+          })}
+        >
           <Controller
             name="title"
             control={control}
@@ -136,7 +142,7 @@ export const IssueModal = ({
           />
 
           {isBoardsLoading ? (
-            <SelectSkeleton/>
+            <SelectSkeleton />
           ) : (
             <AsyncSelect
               control={control}
@@ -166,7 +172,7 @@ export const IssueModal = ({
           />
 
           {isUsersLoading ? (
-            <SelectSkeleton/>
+            <SelectSkeleton />
           ) : (
             <AsyncSelect
               control={control}

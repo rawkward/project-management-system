@@ -1,13 +1,11 @@
-// Базовый тип ответа API
 export type ApiResponse<T> = {
   data: T;
 };
 
-// Ответы API
 export type ApiIssueResponse = ApiResponse<ApiIssue>;
 export type ApiIssuesResponse = ApiResponse<ApiIssue[]>;
 
-type ApiAssignee = {
+export type ApiAssignee = {
   id: number;
   fullName: string;
   email: string;
@@ -23,14 +21,15 @@ export type ApiIssue = {
   assignee: ApiAssignee;
   boardId: number;
   boardName: string;
+  assigneeId: number;
 };
 
 export type Issue = {
   id: number;
   title: string;
   description?: string;
-  priority: 'Low' | 'Medium' | 'High';
-  status: 'Backlog' | 'Todo' | 'InProgress' | 'Done';
+  priority: "Low" | "Medium" | "High";
+  status: "Backlog" | "Todo" | "InProgress" | "Done";
   assigneeId: number;
   boardId: number;
   boardName: string;
@@ -38,11 +37,11 @@ export type Issue = {
 
 export type IssueFormValues = {
   title: string;
-  description?: string;
-  priority: 'low' | 'medium' | 'high';
-  status: 'backlog' | 'todo' | 'in_progress' | 'done';
-  assigneeId?: number | null;
+  description: string;
+  priority: "Low" | "Medium" | "High";
+  status: "Backlog" | "Todo" | "InProgress" | "Done";
   boardId: number;
+  assigneeId: number;
 };
 
 export type Board = {

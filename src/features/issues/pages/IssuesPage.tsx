@@ -1,35 +1,24 @@
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button, CircularProgress } from "@mui/material";
-import { IssuesTable } from "@/features/issues/components/IssuesTable.tsx";
-import { IssueFilters } from "@/features/issues/components/IssueFilters.tsx";
-
-import { fetchIssues, searchIssues } from "@/features/issues/api/issue-api.ts";
+import { IssuesList } from "@/features/issues/components/IssuesList";
+import { IssueFilters } from "@/features/issues/components/IssueFilters";
+import { fetchIssues } from "@/features/issues/api/issue-api";
+import { Issue } from "@/features/issues/types";
+import { Board } from "@/features/boards/types.ts";
+import { useIssueModal } from "@/features/issues/hooks/useIssueModal";
+import { useState } from "react";
 import { fetchBoards } from "@/features/boards/api/board-api.ts";
-import { Issue, Board } from "@/features/issues/types.ts"; // Обратите внимание на используемый тип
-import { Link } from "react-router";
-import { IssueModal } from "@/features/issues/ui/IssueModal.tsx";
 
 export const IssuesPage = () => {
-  const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
   const [filters, setFilters] = useState({
     search: "",
     status: "",
     board: "",
-    assignee: "",
   });
 
   const { data: issues = [], isLoading } = useQuery<Issue[]>({
-    queryKey: ["issues", filters],
-    queryFn: () =>
-      filters.search ? searchIssues(filters.search) : fetchIssues(),
-    select: (data) =>
-      data.filter(
-        (issue) =>
-          (filters.status ? issue.status === filters.status : true) &&
-          (filters.board ? issue.boardId === Number(filters.board) : true) &&
-          (filters.assignee ? issue.assigneeId === Number(filters.assignee) : true),
-      ),
+    queryKey: ["issues"],
+    queryFn: fetchIssues,
   });
 
   const { data: boards = [] } = useQuery<Board[]>({
@@ -37,11 +26,38 @@ export const IssuesPage = () => {
     queryFn: fetchBoards,
   });
 
+  const { openModal } = useIssueModal();
+
+  const handleIssueClick = (issue: Issue) => {
+    openModal("edit", {
+      initialData: issue,
+      sourcePage: "issues",
+    });
+  };
+
+  const filteredIssues = issues.filter((issue) => {
+    const searchLower = filters.search.toLowerCase();
+    const statusMatch = filters.status ? issue.status === filters.status : true;
+    const boardMatch = filters.board
+      ? issue.boardId.toString() === filters.board
+      : true;
+    const titleMatch = issue.title.toLowerCase().includes(searchLower);
+    const assigneeMatch = issue.assigneeFullName
+      ?.toLowerCase()
+      .includes(searchLower);
+
+    return statusMatch && boardMatch && (titleMatch || assigneeMatch);
+  });
+
   return (
     <div className="p-4">
       <div className="flex justify-between mb-4">
         <h1 className="text-2xl font-bold">Все задачи</h1>
-        <Button variant="contained" component={Link} to="?modal=create">
+        <Button
+          variant="contained"
+          sx={{ mb: 5 }}
+          onClick={() => openModal("create", { sourcePage: "issues" })}
+        >
           Создать задачу
         </Button>
       </div>
@@ -55,15 +71,8 @@ export const IssuesPage = () => {
       {isLoading ? (
         <CircularProgress />
       ) : (
-        <IssuesTable issues={issues} onRowClick={setSelectedIssue} />
+        <IssuesList issues={filteredIssues} onIssueClick={handleIssueClick} />
       )}
-
-      <IssueModal
-        open={!!selectedIssue}
-        issue={selectedIssue}
-        onClose={() => setSelectedIssue(null)}
-        sourcePage="issues"
-      />
     </div>
   );
 };

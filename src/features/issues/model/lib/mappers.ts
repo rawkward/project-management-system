@@ -9,4 +9,5 @@ export const mapApiIssueToIssue = (apiIssue: ApiIssue): Issue => ({
   assigneeId: apiIssue.assignee.id,
   boardId: apiIssue.boardId,
   boardName: apiIssue.boardName,
+  assigneeFullName: apiIssue.assignee.fullName,
 });

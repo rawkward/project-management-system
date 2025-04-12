@@ -11,6 +11,7 @@ import { fetchUsers } from "@/features/users/api/user-api.ts";
 import { SelectSkeleton } from "@/shared/ui/skeletons/SelectSkeleton.tsx";
 import { useDraftIssue } from "@/features/issues/hooks/useDraftIssue.ts";
 import { Link } from "react-router";
+import { useEffect } from "react";
 
 const PRIORITY_OPTIONS = [
   { value: "High", label: "Высокий" },
@@ -38,7 +39,8 @@ export const IssueModal = ({
   sourcePage,
   onClose,
 }: IssueModalProps) => {
-  const { control, handleSubmit, formState, watch } = useDraftIssue(issue || undefined);
+  const form = useDraftIssue(issue || undefined);
+  const { control, handleSubmit, formState, watch } = form;
   const { errors } = formState;
   const queryClient = useQueryClient();
 
@@ -62,10 +64,21 @@ export const IssueModal = ({
     label: u.fullName,
   }));
 
+  useEffect(() => {
+    if (issue) {
+      form.reset({
+        ...issue,
+        boardId: issue.boardId,
+        assigneeId: issue.assigneeId,
+      });
+    }
+  }, [issue, form]);
+
   const { mutateAsync } = useMutation({
     mutationFn: async (data: IssueFormValues) => {
       if (issue?.id) {
-        await updateIssue(issue.id, data);
+        const updateData = { ...data, boardId: issue.boardId };
+        await updateIssue(issue.id, updateData);
         return fetchIssue(issue.id);
       } else {
         const newId = await createIssue(data);

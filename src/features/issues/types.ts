@@ -33,6 +33,7 @@ export type Issue = {
   assigneeId: number;
   boardId: number;
   boardName: string;
+  assigneeFullName: string;
 };
 
 export type IssueFormValues = {
@@ -42,11 +43,6 @@ export type IssueFormValues = {
   status: "Backlog" | "Todo" | "InProgress" | "Done";
   boardId: number;
   assigneeId: number;
-};
-
-export type Board = {
-  id: number;
-  name: string;
 };
 
 export type User = {

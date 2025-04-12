@@ -47,8 +47,13 @@ export const updateIssueStatus = async (
 };
 
 export const searchIssues = async (query: string): Promise<Issue[]> => {
-  const response = await apiClient<ApiIssuesResponse>(
-    `/tasks/search?q=${query}`,
-  );
-  return response.data.map(mapApiIssueToIssue);
+  try {
+    const response = await apiClient<ApiIssuesResponse>(
+      `/tasks/search?q=${encodeURIComponent(query)}`
+    );
+    return response.data.map(mapApiIssueToIssue);
+  } catch (error) {
+    console.error("Search error:", error);
+    return [];
+  }
 };

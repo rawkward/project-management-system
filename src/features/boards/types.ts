@@ -9,6 +9,11 @@ export type ApiBoard = {
 
 export type ApiBoardsResponse = ApiResponse<ApiBoard[]>;
 
+export type Board = {
+  id: number;
+  name: string;
+};
+
 export type BoardOption = {
   id: number;
   name: string;

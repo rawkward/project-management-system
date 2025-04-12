@@ -16,6 +16,7 @@ export const Layout = () => {
     assigneeId: 0,
     boardId: 0,
     boardName: "",
+    assigneeFullName: "",
   };
 
   return (

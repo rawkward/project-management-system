@@ -7,9 +7,10 @@ import { Issue, IssueFormValues } from "../types";
 import { createIssue, fetchIssue, updateIssue } from "../api/issue-api";
 import { fetchBoards } from "@/features/boards/api/board-api.ts";
 import { fetchUsers } from "@/features/users/api/user-api.ts";
-import { Link } from "react-router";
+
 import { SelectSkeleton } from "@/shared/ui/skeletons/SelectSkeleton.tsx";
 import { useDraftIssue } from "@/features/issues/hooks/useDraftIssue.ts";
+import { Link } from "react-router";
 
 const PRIORITY_OPTIONS = [
   { value: "High", label: "Высокий" },
@@ -25,24 +26,21 @@ const STATUS_OPTIONS = [
 ];
 
 type IssueModalProps = {
-  mode: "create" | "edit";
-  initialData?: Partial<Issue>;
-  currentBoardId?: number;
+  open: boolean;
+  issue?: Issue | null;
   sourcePage?: "boards" | "issues";
   onClose: () => void;
 };
 
 export const IssueModal = ({
-  mode,
-  initialData,
-  currentBoardId,
+  open,
+  issue,
   sourcePage,
   onClose,
 }: IssueModalProps) => {
-  const form = useDraftIssue(mode);
-
-  const { control, handleSubmit, formState } = form;
+  const { control, handleSubmit, formState, watch } = useDraftIssue(issue || undefined);
   const { errors } = formState;
+  const queryClient = useQueryClient();
 
   const { data: boards = [], isLoading: isBoardsLoading } = useQuery({
     queryKey: ["boards"],
@@ -64,17 +62,14 @@ export const IssueModal = ({
     label: u.fullName,
   }));
 
-  const queryClient = useQueryClient();
-
   const { mutateAsync } = useMutation({
     mutationFn: async (data: IssueFormValues) => {
-      if (mode === "create") {
+      if (issue?.id) {
+        await updateIssue(issue.id, data);
+        return fetchIssue(issue.id);
+      } else {
         const newId = await createIssue(data);
         return fetchIssue(newId);
-      } else {
-        if (!initialData?.id) throw new Error("ID задачи не указан");
-        await updateIssue(initialData.id, data);
-        return fetchIssue(initialData.id);
       }
     },
     onSuccess: () => {
@@ -84,10 +79,10 @@ export const IssueModal = ({
   });
 
   return (
-    <Modal open onClose={onClose}>
+    <Modal open={open} onClose={onClose}>
       <Box sx={{ p: 4 }}>
         <Typography variant="h6" gutterBottom>
-          {mode === "create" ? "Создать задачу" : "Редактировать задачу"}
+          {issue ? "Редактировать задачу" : "Создать задачу"}
         </Typography>
 
         <form
@@ -95,6 +90,7 @@ export const IssueModal = ({
             try {
               await mutateAsync(data);
               localStorage.removeItem("issue-draft");
+              onClose();
             } catch (error) {
               console.error("Ошибка сохранения:", error);
             }
@@ -142,7 +138,7 @@ export const IssueModal = ({
               options={boardOptions}
               isLoading={isBoardsLoading}
               error={errors.boardId}
-              disabled={!!currentBoardId}
+              disabled={!!issue?.boardId}
             />
           )}
 
@@ -176,18 +172,17 @@ export const IssueModal = ({
           )}
 
           <Box sx={{ mt: 3, display: "flex", gap: 2 }}>
-            {sourcePage !== "boards" && (
+            {sourcePage === "issues" && (
               <Button
-                variant="outlined"
                 component={Link}
-                to={`/boards/${initialData?.boardId}`}
-                disabled={!initialData?.boardId}
+                to={`/boards/${watch("boardId")}`}
+                disabled={!watch("boardId")}
               >
                 Перейти на доску
               </Button>
             )}
             <Button type="submit" variant="contained" sx={{ ml: "auto" }}>
-              {mode === "create" ? "Создать" : "Обновить"}
+              {issue ? "Обновить" : "Создать"}
             </Button>
           </Box>
         </form>

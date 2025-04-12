@@ -11,7 +11,7 @@ import {
   searchIssues,
   fetchBoards,
 } from "@/features/issues/api/issue-api.ts";
-import { Issue } from "@/features/issues/types.ts";
+import { Issue, Board } from "@/features/issues/types.ts";
 import { Link } from "react-router";
 
 export const IssuesPage = () => {
@@ -23,7 +23,7 @@ export const IssuesPage = () => {
     assignee: "",
   });
 
-  const { data: issues = [], isLoading } = useQuery({
+  const { data: issues = [], isLoading } = useQuery<Issue[]>({
     queryKey: ["issues", filters],
     queryFn: () =>
       filters.search ? searchIssues(filters.search) : fetchIssues(),
@@ -38,7 +38,7 @@ export const IssuesPage = () => {
       ),
   });
 
-  const { data: boards = [] } = useQuery({
+  const { data: boards = [] } = useQuery<Board[]>({
     queryKey: ["boards"],
     queryFn: fetchBoards,
   });

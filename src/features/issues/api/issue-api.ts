@@ -14,11 +14,7 @@ import { apiClient } from "@/shared/api/base-api.ts";
 
 export const fetchIssues = async (): Promise<Issue[]> => {
   const response = await apiClient<ApiIssuesResponse>("/tasks");
-  return response.data.map(issue => ({
-    ...issue,
-    assigneeId: issue.assignee.id,
-    boardName: issue.boardName || "Без проекта"
-  }));
+  return response.data.map(mapApiIssueToIssue);
 };
 
 export const fetchIssue = async (id: number): Promise<Issue> => {
@@ -34,7 +30,10 @@ export const createIssue = async (data: IssueFormValues): Promise<number> => {
   return response.data.id;
 };
 
-export const updateIssue = async (id: number, data: IssueFormValues): Promise<Issue> => {
+export const updateIssue = async (
+  id: number,
+  data: IssueFormValues,
+): Promise<Issue> => {
   const response = await apiClient<ApiIssueResponse>(`/tasks/update/${id}`, {
     method: "PUT",
     body: JSON.stringify(data),
@@ -53,6 +52,8 @@ export const updateIssueStatus = async (
 };
 
 export const searchIssues = async (query: string): Promise<Issue[]> => {
-  const response = await apiClient<ApiIssuesResponse>(`/tasks/search?q=${query}`);
-  return response.data;
+  const response = await apiClient<ApiIssuesResponse>(
+    `/tasks/search?q=${query}`,
+  );
+  return response.data.map(mapApiIssueToIssue);
 };

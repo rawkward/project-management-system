@@ -1,10 +1,26 @@
 import { TextField, MenuItem, Box } from "@mui/material";
-import { UserAvatar } from "@/features/users";
+//import { UserAvatar } from "@/features/users";
 import { useQuery } from "@tanstack/react-query";
-import { fetchUsers } from "@/features/users/api/user-api.ts";
+import { fetchUsers } from "@/features/users/api/user-api";
+import { User, Board } from "@/features/issues/types"; // Используем существующие типы
 
-export const IssueFilters = ({ boards, filters, onFilterChange }) => {
-  const { data: users = [] } = useQuery({
+interface IssueFiltersProps {
+  boards: Board[];
+  filters: { search: string; status: string; board: string; assignee: string };
+  onFilterChange: (filters: {
+    search: string;
+    status: string;
+    board: string;
+    assignee: string;
+  }) => void;
+}
+
+export const IssueFilters = ({
+  boards,
+  filters,
+  onFilterChange,
+}: IssueFiltersProps) => {
+  const { data: users = [] } = useQuery<User[]>({
     queryKey: ["users"],
     queryFn: fetchUsers,
   });
@@ -58,14 +74,9 @@ export const IssueFilters = ({ boards, filters, onFilterChange }) => {
         }
         size="small"
         sx={{ minWidth: 140 }}
-        renderValue={(selected) => (
-          <UserAvatar user={users.find((u) => u.id === selected)} size={24} />
-        )}
       >
         {users.map((user) => (
-          <MenuItem key={user.id} value={user.id}>
-            <UserAvatar user={user} showName />
-          </MenuItem>
+          <MenuItem key={user.id} value={user.id}></MenuItem>
         ))}
       </TextField>
     </Box>

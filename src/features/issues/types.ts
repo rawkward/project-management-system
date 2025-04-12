@@ -27,7 +27,7 @@ export type ApiIssue = {
 export type Issue = {
   id: number;
   title: string;
-  description?: string;
+  description: string;
   priority: "Low" | "Medium" | "High";
   status: "Backlog" | "Todo" | "InProgress" | "Done";
   assigneeId: number;

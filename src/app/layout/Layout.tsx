@@ -1,11 +1,22 @@
-// src/app/layout/Layout.tsx
 import { Header } from "@/shared/ui/header/Header";
 import { ReactNode } from "react";
 import { IssueModal } from "@/features/issues/ui/IssueModal.tsx";
 import { useIssueModal } from "@/features/issues/hooks/useIssueModal.ts";
+import { Issue } from "@/features/issues/types.ts";
 
 export const Layout = ({ children }: { children: ReactNode }) => {
   const { modalState, closeModal } = useIssueModal();
+
+  const defaultIssue: Issue = {
+    id: 0,
+    title: "",
+    description: "",
+    priority: "Low",
+    status: "Backlog",
+    assigneeId: 0,
+    boardId: 0,
+    boardName: "",
+  };
 
   return (
     <>
@@ -14,9 +25,12 @@ export const Layout = ({ children }: { children: ReactNode }) => {
 
       {modalState && (
         <IssueModal
-          mode={modalState.mode}
-          initialData={modalState.initialData}
-          currentBoardId={modalState.currentBoardId}
+          open={true}
+          issue={
+            modalState.initialData
+              ? { ...defaultIssue, ...modalState.initialData }
+              : undefined
+          }
           sourcePage={modalState.sourcePage}
           onClose={closeModal}
         />

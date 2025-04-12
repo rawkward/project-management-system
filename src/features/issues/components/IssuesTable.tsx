@@ -6,11 +6,24 @@ import {
   TableRow,
   Chip,
 } from "@mui/material";
-import { formatDate, UserAvatar } from "@/shared/lib";
+//import { UserAvatar } from "@/shared/lib";
 import { Link } from "react-router";
+import { ApiIssue } from "@/features/issues/types.ts";
 
-const StatusChip = ({ status }) => {
-  const statusColors = {
+type IssuesTableProps = {
+  issues: ApiIssue[];
+  onRowClick: (issue: ApiIssue) => void;
+};
+
+interface StatusChipProps {
+  status: ApiIssue["status"];
+}
+
+const StatusChip = ({ status }: StatusChipProps) => {
+  const statusColors: Record<
+    ApiIssue["status"],
+    "default" | "info" | "warning" | "success"
+  > = {
     Backlog: "default",
     Todo: "info",
     InProgress: "warning",
@@ -20,7 +33,7 @@ const StatusChip = ({ status }) => {
   return <Chip label={status} color={statusColors[status]} size="small" />;
 };
 
-export const IssuesTable = ({ issues, onRowClick }) => (
+export const IssuesTable = ({ issues, onRowClick }: IssuesTableProps) => (
   <Table>
     <TableHead>
       <TableRow>
@@ -51,10 +64,6 @@ export const IssuesTable = ({ issues, onRowClick }) => (
               {issue.boardName}
             </Link>
           </TableCell>
-          <TableCell>
-            <UserAvatar user={issue.assignee} showName />
-          </TableCell>
-          <TableCell>{formatDate(issue.createdAt)}</TableCell>
         </TableRow>
       ))}
     </TableBody>

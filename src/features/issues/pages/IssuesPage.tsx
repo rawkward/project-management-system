@@ -1,18 +1,14 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button, CircularProgress } from "@mui/material";
-import {
-  IssueFilters,
-  IssuesTable,
-  IssueModal,
-} from "@/features/issues/components/IssueFilters.tsx";
-import {
-  fetchIssues,
-  searchIssues,
-  fetchBoards,
-} from "@/features/issues/api/issue-api.ts";
-import { Issue, Board } from "@/features/issues/types.ts";
+import { IssuesTable } from "@/features/issues/components/IssuesTable.tsx";
+import { IssueFilters } from "@/features/issues/components/IssueFilters.tsx";
+
+import { fetchIssues, searchIssues } from "@/features/issues/api/issue-api.ts";
+import { fetchBoards } from "@/features/boards/api/board-api.ts";
+import { Issue, Board } from "@/features/issues/types.ts"; // Обратите внимание на используемый тип
 import { Link } from "react-router";
+import { IssueModal } from "@/features/issues/ui/IssueModal.tsx";
 
 export const IssuesPage = () => {
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
@@ -32,9 +28,7 @@ export const IssuesPage = () => {
         (issue) =>
           (filters.status ? issue.status === filters.status : true) &&
           (filters.board ? issue.boardId === Number(filters.board) : true) &&
-          (filters.assignee
-            ? issue.assigneeId === Number(filters.assignee)
-            : true),
+          (filters.assignee ? issue.assigneeId === Number(filters.assignee) : true),
       ),
   });
 

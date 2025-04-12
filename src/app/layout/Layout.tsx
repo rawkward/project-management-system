@@ -1,10 +1,10 @@
 import { Header } from "@/shared/ui/header/Header";
-import { ReactNode } from "react";
 import { IssueModal } from "@/features/issues/ui/IssueModal.tsx";
 import { useIssueModal } from "@/features/issues/hooks/useIssueModal.ts";
 import { Issue } from "@/features/issues/types.ts";
+import { Outlet } from "react-router";
 
-export const Layout = ({ children }: { children: ReactNode }) => {
+export const Layout = () => {
   const { modalState, closeModal } = useIssueModal();
 
   const defaultIssue: Issue = {
@@ -21,7 +21,9 @@ export const Layout = ({ children }: { children: ReactNode }) => {
   return (
     <>
       <Header />
-      <main>{children}</main>
+      <main>
+        <Outlet />
+      </main>
 
       {modalState && (
         <IssueModal

@@ -9,7 +9,7 @@ import { IssueModalProvider } from "@/features/issues/model/context/issueModalPr
 function App() {
   return (
     <IssueModalProvider>
-      <Layout>test</Layout>
+      <RouterProvider router={router} />
     </IssueModalProvider>
   );
 }

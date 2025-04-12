@@ -1,8 +1,7 @@
 import { TextField, MenuItem, Box } from "@mui/material";
-//import { UserAvatar } from "@/features/users";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUsers } from "@/features/users/api/user-api";
-import { User, Board } from "@/features/issues/types"; // Используем существующие типы
+import { User, Board } from "@/features/issues/types";
 
 interface IssueFiltersProps {
   boards: Board[];

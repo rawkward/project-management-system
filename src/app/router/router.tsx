@@ -1,4 +1,8 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter} from "react-router";
+import { IssuesPage} from "@/features/issues/pages/IssuesPage.tsx";
+import { Layout } from "@/app/layout/Layout.tsx";
+//import { BoardsPage } from "@/features/boards/components/BoardsPage.tsx";
+//import { BoardPage } from "@/features/boards/components/BoardPage.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -7,7 +11,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "boards",
-        element: <BoardsPage />,
+        element: <div />,
       },
       {
         path: "issues",
@@ -15,7 +19,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "boards/:id",
-        element: <BoardPage />,
+        element: <div />,
       },
     ],
   },

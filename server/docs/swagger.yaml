@@ -32,9 +32,9 @@ definitions:
         type: string
       priority:
         enum:
-        - Low
-        - Medium
-        - High
+          - Low
+          - Medium
+          - High
         example: Medium
         type: string
       title:
@@ -42,10 +42,10 @@ definitions:
         minLength: 1
         type: string
     required:
-    - assigneeId
-    - boardId
-    - description
-    - title
+      - assigneeId
+      - boardId
+      - description
+      - title
     type: object
   models.CreateTaskResponse:
     description: Ответ после успешного создания задачи
@@ -79,16 +79,16 @@ definitions:
         type: integer
       priority:
         enum:
-        - Low
-        - Medium
-        - High
+          - Low
+          - Medium
+          - High
         example: High
         type: string
       status:
         enum:
-        - Backlog
-        - InProgress
-        - Done
+          - Backlog
+          - InProgress
+          - Done
         example: Done
         type: string
       title:
@@ -105,16 +105,16 @@ definitions:
         type: integer
       priority:
         enum:
-        - Low
-        - Medium
-        - High
+          - Low
+          - Medium
+          - High
         example: Medium
         type: string
       status:
         enum:
-        - Backlog
-        - InProgress
-        - Done
+          - Backlog
+          - InProgress
+          - Done
         example: Done
         type: string
       title:
@@ -126,8 +126,6 @@ definitions:
     properties:
       assignee:
         $ref: '#/definitions/models.AssigneeUserForTask'
-      assigneeId:
-        type: integer
       boardId:
         type: integer
       boardName:
@@ -138,16 +136,16 @@ definitions:
         type: integer
       priority:
         enum:
-        - Low
-        - Medium
-        - High
+          - Low
+          - Medium
+          - High
         example: Medium
         type: string
       status:
         enum:
-        - Backlog
-        - InProgress
-        - Done
+          - Backlog
+          - InProgress
+          - Done
         example: Done
         type: string
       title:
@@ -220,16 +218,16 @@ definitions:
         type: integer
       priority:
         enum:
-        - Low
-        - Medium
-        - High
+          - Low
+          - Medium
+          - High
         example: Medium
         type: string
       status:
         enum:
-        - Backlog
-        - InProgress
-        - Done
+          - Backlog
+          - InProgress
+          - Done
         example: Done
         type: string
       title:
@@ -267,16 +265,16 @@ definitions:
         type: string
       priority:
         enum:
-        - Low
-        - Medium
-        - High
+          - Low
+          - Medium
+          - High
         example: Medium
         type: string
       status:
         enum:
-        - Backlog
-        - InProgress
-        - Done
+          - Backlog
+          - InProgress
+          - Done
         example: Done
         type: string
       title:
@@ -284,9 +282,9 @@ definitions:
         minLength: 1
         type: string
     required:
-    - assigneeId
-    - description
-    - title
+      - assigneeId
+      - description
+      - title
     type: object
   models.UpdateTaskResponse:
     description: Ответ после успешного обновления задачи
@@ -298,9 +296,9 @@ definitions:
     properties:
       status:
         enum:
-        - Backlog
-        - InProgress
-        - Done
+          - Backlog
+          - InProgress
+          - Done
         example: Done
         type: string
     type: object
@@ -319,11 +317,11 @@ paths:
   /boards:
     get:
       consumes:
-      - application/json
+        - application/json
       description: Возвращает массив досок с основной информацией и количеством задач
         в каждой
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: Успешный ответ со списком досок
@@ -337,20 +335,20 @@ paths:
             $ref: '#/definitions/errs.ErrorResponse'
       summary: Получить список всех досок
       tags:
-      - Доски
+        - Доски
   /boards/{boardId}:
     get:
       consumes:
-      - application/json
+        - application/json
       description: Возвращает все задачи, принадлежащие указанной доске
       parameters:
-      - description: ID доски
-        in: path
-        name: boardId
-        required: true
-        type: integer
+        - description: ID доски
+          in: path
+          name: boardId
+          required: true
+          type: integer
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -372,15 +370,15 @@ paths:
             $ref: '#/definitions/errs.ErrorResponse'
       summary: Получить задачи доски
       tags:
-      - Доски
+        - Доски
   /tasks:
     get:
       consumes:
-      - application/json
+        - application/json
       description: Возвращает массив задач с полной информацией, включая данные исполнителей
         и досок
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -394,21 +392,21 @@ paths:
             $ref: '#/definitions/errs.ErrorResponse'
       summary: Получить список всех задач
       tags:
-      - Задачи
+        - Задачи
   /tasks/{taskId}:
     get:
       consumes:
-      - application/json
+        - application/json
       description: Возвращает полную информацию о задаче, включая данные исполнителя
         и доски
       parameters:
-      - description: ID задачи
-        in: path
-        name: taskId
-        required: true
-        type: integer
+        - description: ID задачи
+          in: path
+          name: taskId
+          required: true
+          type: integer
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -424,21 +422,21 @@ paths:
             $ref: '#/definitions/errs.ErrorResponse'
       summary: Получить задачу по ID
       tags:
-      - Задачи
+        - Задачи
   /tasks/create:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Создает новую задачу с указанными параметрами
       parameters:
-      - description: Данные для создания задачи
-        in: body
-        name: input
-        required: true
-        schema:
-          $ref: '#/definitions/models.CreateTaskRequest'
+        - description: Данные для создания задачи
+          in: body
+          name: input
+          required: true
+          schema:
+            $ref: '#/definitions/models.CreateTaskRequest'
       produces:
-      - application/json
+        - application/json
       responses:
         "201":
           description: Задача успешно создана
@@ -458,26 +456,26 @@ paths:
             $ref: '#/definitions/errs.ErrorResponse'
       summary: Создать новую задачу
       tags:
-      - Задачи
+        - Задачи
   /tasks/update/{taskId}:
     put:
       consumes:
-      - application/json
+        - application/json
       description: Обновляет задачу по указанному ID
       parameters:
-      - description: ID задачи
-        in: path
-        name: taskId
-        required: true
-        type: integer
-      - description: Данные для обновления задачи
-        in: body
-        name: input
-        required: true
-        schema:
-          $ref: '#/definitions/models.UpdateTaskRequest'
+        - description: ID задачи
+          in: path
+          name: taskId
+          required: true
+          type: integer
+        - description: Данные для обновления задачи
+          in: body
+          name: input
+          required: true
+          schema:
+            $ref: '#/definitions/models.UpdateTaskRequest'
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -497,26 +495,26 @@ paths:
             $ref: '#/definitions/errs.ErrorResponse'
       summary: Обновить задачу
       tags:
-      - Задачи
+        - Задачи
   /tasks/updateStatus/{taskId}:
     put:
       consumes:
-      - application/json
+        - application/json
       description: Обновляет статус задачи по указанному ID
       parameters:
-      - description: ID задачи
-        in: path
-        name: taskId
-        required: true
-        type: integer
-      - description: Данные для обновления статуса задачи
-        in: body
-        name: input
-        required: true
-        schema:
-          $ref: '#/definitions/models.UpdateTaskStatusRequest'
+        - description: ID задачи
+          in: path
+          name: taskId
+          required: true
+          type: integer
+        - description: Данные для обновления статуса задачи
+          in: body
+          name: input
+          required: true
+          schema:
+            $ref: '#/definitions/models.UpdateTaskStatusRequest'
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -536,15 +534,15 @@ paths:
             $ref: '#/definitions/errs.ErrorResponse'
       summary: Обновить статус задачи
       tags:
-      - Задачи
+        - Задачи
   /teams:
     get:
       consumes:
-      - application/json
+        - application/json
       description: Получает информацию о всех командах, включая количество пользователей
         и досок
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -558,20 +556,20 @@ paths:
             $ref: '#/definitions/errs.ErrorResponse'
       summary: Получить информацию о всех командах
       tags:
-      - Команды
+        - Команды
   /teams/{teamId}:
     get:
       consumes:
-      - application/json
+        - application/json
       description: Получает информацию о команде по ID, включая пользователей и доски
       parameters:
-      - description: ID команды
-        in: path
-        name: teamId
-        required: true
-        type: integer
+        - description: ID команды
+          in: path
+          name: teamId
+          required: true
+          type: integer
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -587,15 +585,15 @@ paths:
             $ref: '#/definitions/errs.ErrorResponse'
       summary: Получить информацию о команде
       tags:
-      - ""
+        - ""
   /users:
     get:
       consumes:
-      - application/json
+        - application/json
       description: Получает информацию о всех пользователях, включая их команды и
         количество задач
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -609,20 +607,20 @@ paths:
             $ref: '#/definitions/errs.ErrorResponse'
       summary: Получить информацию о всех пользователях
       tags:
-      - Пользователи
+        - Пользователи
   /users/{id}/tasks:
     get:
       consumes:
-      - application/json
+        - application/json
       description: Получает список задач для указанного пользователя по его ID
       parameters:
-      - description: ID пользователя
-        in: path
-        name: id
-        required: true
-        type: integer
+        - description: ID пользователя
+          in: path
+          name: id
+          required: true
+          type: integer
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -640,5 +638,5 @@ paths:
             $ref: '#/definitions/errs.ErrorResponse'
       summary: Получить задачи пользователя
       tags:
-      - Пользователи
+        - Пользователи
 swagger: "2.0"

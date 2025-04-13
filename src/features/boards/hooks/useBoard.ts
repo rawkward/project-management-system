@@ -5,8 +5,10 @@ import { Board } from "@/features/boards/types.ts";
 export const useBoard = (boardId: number) => {
   return useQuery({
     queryKey: ["board", boardId],
-    queryFn: async () => {
-      const response = await apiClient<{ data: Board[] }>("/boards");
+    queryFn: async ({ signal }) => {
+      const response = await apiClient<{ data: Board[] }>("/boards", {
+        signal,
+      });
       const boards = response.data;
 
       const board = boards.find((b) => b.id === boardId);

@@ -34,10 +34,7 @@ export const AsyncSelect = <T extends FieldValues>({
       control={control}
       name={name}
       render={({ field }) => {
-        const currentValue =
-          options.find((opt) => opt.value === field.value)?.value || "";
-
-        const displayValue = isLoading ? "" : currentValue;
+        const currentOption = options.find((opt) => opt.value == field.value);
 
         return (
           <TextField
@@ -50,7 +47,7 @@ export const AsyncSelect = <T extends FieldValues>({
             disabled={disabled || isLoading}
             error={!!error || isLoading}
             helperText={error?.message}
-            value={displayValue}
+            value={currentOption?.value ?? ""}
             onChange={(e) => field.onChange(e.target.value)}
           >
             {isLoading ? (

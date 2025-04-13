@@ -9,8 +9,11 @@ import { fetchBoards } from "@/features/boards/api/board-api.ts";
 import { fetchUsers } from "@/features/users/api/user-api.ts";
 
 import { SelectSkeleton } from "@/shared/ui/skeletons/SelectSkeleton.tsx";
-import { useDraftIssue } from "@/features/issues/hooks/useDraftIssue.ts";
-import { Link } from "react-router";
+import {
+  DRAFT_KEY,
+  useDraftIssue,
+} from "@/features/issues/hooks/useDraftIssue.ts";
+import { Link, useParams } from "react-router";
 import { useEffect } from "react";
 
 const PRIORITY_OPTIONS = [
@@ -39,8 +42,17 @@ export const IssueModal = ({
   sourcePage,
   onClose,
 }: IssueModalProps) => {
-  const form = useDraftIssue(issue || undefined);
-  const { control, handleSubmit, formState, watch } = form;
+  const form = useDraftIssue(
+    issue || {
+      title: "",
+      description: "",
+      priority: "Low",
+      status: "Backlog",
+      boardId: 0,
+      assigneeId: 0,
+    },
+  );
+  const { control, handleSubmit, formState, watch, reset } = form;
   const { errors } = formState;
   const queryClient = useQueryClient();
 
@@ -64,15 +76,27 @@ export const IssueModal = ({
     label: u.fullName,
   }));
 
+  const { id: selectedBoardId } = useParams<{ id: string }>();
+
   useEffect(() => {
-    if (issue) {
-      form.reset({
-        ...issue,
-        boardId: issue.boardId,
-        assigneeId: issue.assigneeId,
-      });
+    if (open) reset(issue ? { ...issue } : {});
+  }, [open, issue, reset]);
+
+  useEffect(() => {
+    if (sourcePage === "boards" && selectedBoardId) {
+      form.setValue("boardId", Number(selectedBoardId));
     }
-  }, [issue, form]);
+  }, [selectedBoardId, form, sourcePage]);
+
+  const onSubmit = async (data: IssueFormValues) => {
+    try {
+      await mutateAsync(data);
+      if (!issue) localStorage.removeItem(DRAFT_KEY);
+      onClose();
+    } catch (error) {
+      console.error("Ошибка сохранения:", error);
+    }
+  };
 
   const { mutateAsync } = useMutation({
     mutationFn: async (data: IssueFormValues) => {
@@ -98,17 +122,7 @@ export const IssueModal = ({
           {issue ? "Редактировать задачу" : "Создать задачу"}
         </Typography>
 
-        <form
-          onSubmit={handleSubmit(async (data: IssueFormValues) => {
-            try {
-              await mutateAsync(data);
-              localStorage.removeItem("issue-draft");
-              onClose();
-            } catch (error) {
-              console.error("Ошибка сохранения:", error);
-            }
-          })}
-        >
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Controller
             name="title"
             control={control}

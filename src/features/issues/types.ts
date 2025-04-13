@@ -31,9 +31,9 @@ export type Issue = {
   priority: "Low" | "Medium" | "High";
   status: "Backlog" | "Todo" | "InProgress" | "Done";
   assigneeId: number;
+  assigneeFullName: string;
   boardId: number;
   boardName: string;
-  assigneeFullName: string;
 };
 
 export type IssueFormValues = {

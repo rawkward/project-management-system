@@ -7,12 +7,9 @@ export type ApiBoard = {
   taskCount: number;
 };
 
-export type ApiBoardsResponse = ApiResponse<ApiBoard[]>;
+export type Board = ApiBoard;
 
-export type Board = {
-  id: number;
-  name: string;
-};
+export type ApiBoardsResponse = ApiResponse<ApiBoard[]>;
 
 export type BoardOption = {
   id: number;

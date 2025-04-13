@@ -105,7 +105,6 @@ export const IssueModal = ({
       }
 
       if (!issue) localStorage.removeItem(DRAFT_KEY);
-      onClose();
     } catch (error) {
       console.error("Ошибка сохранения:", error);
     }

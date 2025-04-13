@@ -9,7 +9,7 @@ import { Controller } from "react-hook-form";
 import { Option } from "@/features/issues/types.ts";
 
 type AsyncSelectProps<T extends FieldValues> = {
-  control: Control<T>;
+  control?: Control<T>;
   name: Path<T>;
   label: string;
   options: Option[];

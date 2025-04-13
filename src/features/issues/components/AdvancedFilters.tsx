@@ -19,12 +19,12 @@ export const AdvancedFilters = ({
 
   return (
     <Box sx={{ mb: 2 }}>
-      <Button variant="outlined" onClick={() => setOpen(!open)} sx={{ mb: 1 }}>
+      <Button variant="outlined" onClick={() => setOpen(!open)}>
         Фильтры
       </Button>
 
       <Collapse in={open}>
-        <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
+        <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap", mt: 2 }}>
           <TextField
             select
             label="Статус задачи"
@@ -50,7 +50,6 @@ export const AdvancedFilters = ({
             <MenuItem value="">Все проекты</MenuItem>
             {boards.map((board) => (
               <MenuItem key={board.id} value={board.id.toString()}>
-                {" "}
                 {board.name}
               </MenuItem>
             ))}

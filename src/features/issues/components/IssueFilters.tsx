@@ -1,4 +1,3 @@
-// src/features/issues/components/IssueFilters.tsx
 import { Box, TextField } from "@mui/material";
 import { AdvancedFilters } from "./AdvancedFilters";
 import { Board } from "@/features/boards/types.ts";
@@ -31,18 +30,14 @@ export const IssueFilters = ({
   };
 
   return (
-    <Box sx={{ mb: 4 }}>
-      <Box>
-        <TextField
-          label="Поиск"
-          value={filters.search}
-          onChange={(e) =>
-            onFilterChange({ ...filters, search: e.target.value })
-          }
-          fullWidth
-          size="small"
-        />
-      </Box>
+    <Box sx={{ display: "flex", alignItems: "baseline", gap: 2, mb: 4 }}>
+      <TextField
+        label="Поиск"
+        value={filters.search}
+        onChange={(e) => onFilterChange({ ...filters, search: e.target.value })}
+        size="small"
+        sx={{ width: 400 }}
+      />
 
       <AdvancedFilters
         boards={boards}

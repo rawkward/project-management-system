@@ -1,4 +1,5 @@
-import { Grid, Card, CardContent, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
+import { IssueCard } from "@/shared/ui/card/IssueCard.tsx";
 import { Issue } from "../types";
 
 type IssuesListProps = {
@@ -10,11 +11,7 @@ export const IssuesList = ({ issues, onIssueClick }: IssuesListProps) => (
   <Grid container spacing={2} direction="column" sx={{ mt: 2 }}>
     {issues.map((issue) => (
       <Grid key={issue.id}>
-        <Card onClick={() => onIssueClick(issue)} sx={{ cursor: "pointer" }}>
-          <CardContent>
-            <Typography variant="h6">{issue.title}</Typography>
-          </CardContent>
-        </Card>
+        <IssueCard title={issue.title} onClick={() => onIssueClick(issue)} />
       </Grid>
     ))}
   </Grid>

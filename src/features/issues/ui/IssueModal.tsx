@@ -14,7 +14,7 @@ import {
   initialEmptyForm,
   useDraftIssue,
 } from "@/features/issues/hooks/useDraftIssue.ts";
-import { Link, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useEffect } from "react";
 import { useIssueModal } from "@/features/issues/hooks/useIssueModal.ts";
 
@@ -74,6 +74,8 @@ export const IssueModal = ({
 
   const selectedBoardId =
     issue?.boardId ?? modalState?.currentBoardId ?? params.id;
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (open) {
@@ -216,8 +218,10 @@ export const IssueModal = ({
           <Box sx={{ mt: 3, display: "flex", gap: 2 }}>
             {sourcePage === "issues" && (
               <Button
-                component={Link}
-                to={`/boards/${watch("boardId")}`}
+                onClick={() => {
+                  navigate(`/boards/${watch("boardId")}`);
+                  onClose();
+                }}
                 disabled={!watch("boardId")}
               >
                 Перейти на доску

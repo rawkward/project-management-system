@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Button, CircularProgress } from "@mui/material";
+import { Button, CircularProgress, Box } from "@mui/material";
 import { IssuesList } from "@/features/issues/components/IssuesList";
 import { IssueFilters } from "@/features/issues/components/IssueFilters";
 import { fetchIssues } from "@/features/issues/api/issue-api";
@@ -62,11 +62,13 @@ export const IssuesPage = () => {
         </Button>
       </div>
 
-      <IssueFilters
-        boards={boards}
-        filters={filters}
-        onFilterChange={setFilters}
-      />
+      <Box sx={{ display: "flex", alignItems: "center", mb: 4, gap: 2 }}>
+        <IssueFilters
+          boards={boards}
+          filters={filters}
+          onFilterChange={setFilters}
+        />
+      </Box>
 
       {isLoading ? (
         <CircularProgress />

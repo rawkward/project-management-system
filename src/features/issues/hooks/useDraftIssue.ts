@@ -1,14 +1,12 @@
-import {useEffect, useMemo} from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useLocation } from "react-router";
 import { IssueFormValues } from "../types";
 import { IssueSchema } from "@/features/issues/model/schema.ts";
 
-// src/features/issues/hooks/useDraftIssue.ts
 export const DRAFT_KEY = "issue-draft";
 
-const initialEmptyForm: IssueFormValues = {
+export const initialEmptyForm: IssueFormValues = {
   title: "",
   description: "",
   priority: "Low",
@@ -18,28 +16,28 @@ const initialEmptyForm: IssueFormValues = {
 };
 
 export const useDraftIssue = (issue?: IssueFormValues) => {
-  const { pathname } = useLocation();
-  const isCreatePage = pathname.includes("create");
+  const isCreate = !issue;
+
   const draftValues = useMemo(() => {
     const draft = localStorage.getItem(DRAFT_KEY);
     return draft ? JSON.parse(draft) : {};
   }, []);
 
   const form = useForm<IssueFormValues>({
-    defaultValues: isCreatePage
+    defaultValues: isCreate
       ? { ...initialEmptyForm, ...draftValues }
-      : issue || initialEmptyForm,
+      : { ...initialEmptyForm, ...issue },
     resolver: zodResolver(IssueSchema),
   });
 
   useEffect(() => {
-    if (isCreatePage) {
+    if (isCreate) {
       const subscription = form.watch((values) => {
         localStorage.setItem(DRAFT_KEY, JSON.stringify(values));
       });
       return () => subscription.unsubscribe();
     }
-  }, [form, isCreatePage]);
+  }, [form, isCreate]);
 
   return form;
 };

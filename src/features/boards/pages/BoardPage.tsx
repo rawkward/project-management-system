@@ -2,31 +2,30 @@ import { useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import { StatusColumn } from "../components/StatusColumn";
-import { fetchBoard, fetchBoardIssues } from "../api/board-api";
+import { fetchBoardIssues } from "../api/board-api";
 import { Issue } from "@/features/issues/types";
 import { IssueModal } from "@/features/issues/ui/IssueModal";
 import { useState } from "react";
+import { useBoard } from "@/features/boards/hooks/useBoard.ts";
 
-const STATUSES = ["Backlog", "Todo", "InProgress", "Done"];
+const STATUSES = ["Todo", "InProgress", "Done"];
 
 export const BoardPage = () => {
   const { id } = useParams<{ id: string }>();
+
+  const { data: board, isLoading } = useBoard(Number(id));
+
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
 
-  const { data: board, isLoading: boardLoading } = useQuery({
-    queryKey: ["board", id],
-    queryFn: () => fetchBoard(Number(id)),
-  });
-
-  const { data: issues = [], isLoading: issuesLoading } = useQuery<Issue[]>({
+  const { data: issues = [] } = useQuery<Issue[]>({
     queryKey: ["board", id, "issues"],
     queryFn: () => fetchBoardIssues(Number(id)),
     refetchOnWindowFocus: false,
   });
 
-  if (boardLoading || issuesLoading) return <CircularProgress />;
+  if (isLoading) return <CircularProgress />;
 
-  //TODO: разобраться с :id борды
+  if (!board) return <p>Проект не найден</p>;
 
   return (
     <div className="p-4">

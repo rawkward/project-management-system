@@ -11,10 +11,12 @@ import { fetchUsers } from "@/features/users/api/user-api.ts";
 import { SelectSkeleton } from "@/shared/ui/skeletons/SelectSkeleton.tsx";
 import {
   DRAFT_KEY,
+  initialEmptyForm,
   useDraftIssue,
 } from "@/features/issues/hooks/useDraftIssue.ts";
 import { Link, useParams } from "react-router";
 import { useEffect } from "react";
+import { useIssueModal } from "@/features/issues/hooks/useIssueModal.ts";
 
 const PRIORITY_OPTIONS = [
   { value: "High", label: "Высокий" },
@@ -42,16 +44,7 @@ export const IssueModal = ({
   sourcePage,
   onClose,
 }: IssueModalProps) => {
-  const form = useDraftIssue(
-    issue || {
-      title: "",
-      description: "",
-      priority: "Low",
-      status: "Backlog",
-      boardId: 0,
-      assigneeId: 0,
-    },
-  );
+  const form = useDraftIssue(issue || initialEmptyForm);
   const { control, handleSubmit, formState, watch, reset } = form;
   const { errors } = formState;
   const queryClient = useQueryClient();
@@ -76,11 +69,34 @@ export const IssueModal = ({
     label: u.fullName,
   }));
 
-  const { id: selectedBoardId } = useParams<{ id: string }>();
+  const { modalState } = useIssueModal();
+
+  const params = useParams<{ id: string }>();
+
+  const selectedBoardId =
+    issue?.boardId ?? modalState?.currentBoardId ?? params.id;
 
   useEffect(() => {
-    if (open) reset(issue ? { ...issue } : {});
-  }, [open, issue, reset]);
+    if (open && issue) {
+      reset({
+        title: issue.title,
+        description: issue.description,
+        priority: issue.priority,
+        status: issue.status,
+        boardId: issue.boardId,
+        assigneeId: issue.assigneeId,
+      });
+    } else if (open && !issue) {
+      reset({
+        title: "",
+        description: "",
+        priority: "Low",
+        status: "Backlog",
+        boardId: selectedBoardId ? Number(selectedBoardId) : 0,
+        assigneeId: 0,
+      });
+    }
+  }, [open, issue, reset, selectedBoardId]);
 
   useEffect(() => {
     if (sourcePage === "boards" && selectedBoardId) {
@@ -165,7 +181,7 @@ export const IssueModal = ({
               options={boardOptions}
               isLoading={isBoardsLoading}
               error={errors.boardId}
-              disabled={!!issue?.boardId}
+              disabled={sourcePage === "boards"}
             />
           )}
 

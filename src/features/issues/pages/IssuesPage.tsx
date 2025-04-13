@@ -39,7 +39,7 @@ export const IssuesPage = () => {
     const searchLower = filters.search.toLowerCase();
     const statusMatch = filters.status ? issue.status === filters.status : true;
     const boardMatch = filters.board
-      ? issue.boardId.toString() === filters.board
+      ? issue.boardId === Number(filters.board)
       : true;
     const titleMatch = issue.title.toLowerCase().includes(searchLower);
     const assigneeMatch = issue.assigneeFullName

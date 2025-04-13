@@ -8,10 +8,10 @@ interface StatusColumnProps {
 }
 
 const statusLabels: Record<string, string> = {
-  Backlog: "Бэклог",
-  Todo: "К выполнению",
-  InProgress: "В работе",
-  Done: "Готово",
+  Backlog: "Backlog",
+  Todo: "To do",
+  InProgress: "In progress",
+  Done: "Done",
 };
 
 export const StatusColumn = ({

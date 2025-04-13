@@ -8,12 +8,12 @@ export const fetchBoards = async (): Promise<Board[]> => {
   return response.data;
 };
 
-export const fetchBoard = async (boardId: number): Promise<Board> => {
-  const response = await apiClient<{ data: Board }>(`/boards/${boardId}`);
-  return response.data;
-};
-
 export const fetchBoardIssues = async (boardId: number): Promise<Issue[]> => {
   const response = await apiClient<{ data: ApiIssue[] }>(`/boards/${boardId}`);
-  return response.data.map(mapApiIssueToIssue);
+  return response.data.map((issue) =>
+    mapApiIssueToIssue({
+      ...issue,
+      boardId,
+    }),
+  );
 };

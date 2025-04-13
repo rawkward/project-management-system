@@ -120,26 +120,23 @@ export const IssueModal = ({
     }
   };
 
+  const boardId = issue?.boardId;
+
   const { mutateAsync } = useMutation({
     mutationFn: async (data: IssueFormValues) => {
-      if (issue?.id) {
-        const updateData = { ...data, boardId: issue.boardId };
-        await updateIssue(issue.id, updateData);
-        return fetchIssue(issue.id);
+      if (issue?.id && boardId) {
+        await updateIssue(issue.id, data);
+        return fetchIssue(issue.id, boardId); // явно передать сюда boardId дополнительно
       } else {
         const newId = await createIssue(data);
-        return fetchIssue(newId);
+        return fetchIssue(newId, data.boardId);
       }
     },
-    onSuccess: (data) => {
+    onSuccess: (data: Issue) => {
       queryClient.invalidateQueries({ queryKey: ["issues"] });
-
-      if (data.boardId) {
-        queryClient.invalidateQueries({
-          queryKey: ["board", data.boardId, "issues"],
-        });
-      }
-
+      queryClient.invalidateQueries({
+        queryKey: ["board", data.boardId, "issues"],
+      });
       onClose();
     },
   });

@@ -18,7 +18,7 @@ export const BoardPage = () => {
   const { data: board, isLoading } = useBoard(Number(id));
 
   const { data: issues = [] } = useQuery<Issue[]>({
-    queryKey: ["board", id, "issues"],
+    queryKey: ["board", Number(id), "issues"],
     queryFn: () => fetchBoardIssues(Number(id)),
     refetchOnWindowFocus: false,
     refetchInterval: 60000,

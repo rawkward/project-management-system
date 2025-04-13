@@ -12,10 +12,15 @@ export const fetchIssues = async (): Promise<Issue[]> => {
   return response.data.map(mapApiIssueToIssue);
 };
 
-export const fetchIssue = async (id: number): Promise<Issue> => {
+export async function fetchIssue(id: number, boardId: number): Promise<Issue> {
   const response = await apiClient<ApiIssueResponse>(`/tasks/${id}`);
-  return mapApiIssueToIssue(response.data);
-};
+  const apiIssue = response.data;
+
+  return mapApiIssueToIssue({
+    ...apiIssue,
+    boardId,
+  });
+}
 
 export const createIssue = async (data: IssueFormValues): Promise<number> => {
   const response = await apiClient<{ data: { id: number } }>("/tasks/create", {
@@ -25,16 +30,18 @@ export const createIssue = async (data: IssueFormValues): Promise<number> => {
   return response.data.id;
 };
 
-export const updateIssue = async (
+export async function updateIssue(
   id: number,
   data: IssueFormValues,
-): Promise<Issue> => {
-  const response = await apiClient<ApiIssueResponse>(`/tasks/update/${id}`, {
+): Promise<void> {
+  await apiClient(`/tasks/update/${id}`, {
     method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(data),
   });
-  return mapApiIssueToIssue(response.data);
-};
+}
 
 export const updateIssueStatus = async (
   id: number,
@@ -49,7 +56,7 @@ export const updateIssueStatus = async (
 export const searchIssues = async (query: string): Promise<Issue[]> => {
   try {
     const response = await apiClient<ApiIssuesResponse>(
-      `/tasks/search?q=${encodeURIComponent(query)}`
+      `/tasks/search?q=${encodeURIComponent(query)}`,
     );
     return response.data.map(mapApiIssueToIssue);
   } catch (error) {

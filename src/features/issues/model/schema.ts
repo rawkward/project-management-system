@@ -7,7 +7,7 @@ export const IssueSchema = z.object({
   priority: z.enum(["Low", "Medium", "High"], {
     required_error: "Выберите приоритет",
   }),
-  status: z.enum(["Backlog", "Todo", "InProgress", "Done"], {
+  status: z.enum(["Backlog", "InProgress", "Done"], {
     required_error: "Выберите статус",
   }),
   boardId: z.number().min(1, { message: "Выберите проект" }),

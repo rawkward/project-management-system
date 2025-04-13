@@ -25,10 +25,9 @@ const PRIORITY_OPTIONS = [
 ];
 
 const STATUS_OPTIONS = [
-  { value: "Backlog", label: "Бэклог" },
-  { value: "Todo", label: "К выполнению" },
-  { value: "InProgress", label: "В работе" },
-  { value: "Done", label: "Готово" },
+  { value: "Backlog", label: "To do" },
+  { value: "InProgress", label: "In progress" },
+  { value: "Done", label: "Done" },
 ];
 
 type IssueModalProps = {
@@ -106,7 +105,14 @@ export const IssueModal = ({
 
   const onSubmit = async (data: IssueFormValues) => {
     try {
-      await mutateAsync(data);
+      const updatedIssue = await mutateAsync(data);
+
+      if (!issue) {
+        queryClient.setQueryData<Issue[]>(["issues"], (old) =>
+          old ? [...old, updatedIssue] : [updatedIssue],
+        );
+      }
+
       if (!issue) localStorage.removeItem(DRAFT_KEY);
       onClose();
     } catch (error) {
@@ -125,8 +131,15 @@ export const IssueModal = ({
         return fetchIssue(newId);
       }
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["issues"] });
+
+      if (data.boardId) {
+        queryClient.invalidateQueries({
+          queryKey: ["board", data.boardId, "issues"],
+        });
+      }
+
       onClose();
     },
   });

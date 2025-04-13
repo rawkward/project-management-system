@@ -34,10 +34,9 @@ export const AdvancedFilters = ({
             sx={{ minWidth: 200 }}
           >
             <MenuItem value="">Все статусы</MenuItem>
-            <MenuItem value="Backlog">Бэклог</MenuItem>
-            <MenuItem value="Todo">К выполнению</MenuItem>
-            <MenuItem value="InProgress">В работе</MenuItem>
-            <MenuItem value="Done">Готово</MenuItem>
+            <MenuItem value="Backlog">To do</MenuItem>
+            <MenuItem value="InProgress">In progress</MenuItem>
+            <MenuItem value="Done">Done</MenuItem>
           </TextField>
 
           <TextField

@@ -17,7 +17,7 @@ export type ApiIssue = {
   title: string;
   description?: string;
   priority: "High" | "Medium" | "Low";
-  status: "Backlog" | "Todo" | "InProgress" | "Done";
+  status: "Backlog" | "InProgress" | "Done";
   assignee: ApiAssignee;
   boardId: number;
   boardName: string;
@@ -29,7 +29,7 @@ export type Issue = {
   title: string;
   description: string;
   priority: "Low" | "Medium" | "High";
-  status: "Backlog" | "Todo" | "InProgress" | "Done";
+  status: "Backlog" | "InProgress" | "Done";
   assigneeId: number;
   assigneeFullName: string;
   boardId: number;
@@ -40,9 +40,9 @@ export type IssueFormValues = {
   title: string;
   description: string;
   priority: "Low" | "Medium" | "High";
-  status: "Backlog" | "Todo" | "InProgress" | "Done";
-  boardId: number;
+  status: "Backlog" | "InProgress" | "Done";
   assigneeId: number;
+  boardId: number;
 };
 
 export type User = {

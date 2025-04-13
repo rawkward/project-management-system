@@ -8,8 +8,7 @@ interface StatusColumnProps {
 }
 
 const statusLabels: Record<string, string> = {
-  Backlog: "Backlog",
-  Todo: "To do",
+  Backlog: "To do",
   InProgress: "In progress",
   Done: "Done",
 };
@@ -24,7 +23,6 @@ export const StatusColumn = ({
       <Typography variant="h6" gutterBottom>
         {statusLabels[status]} ({issues.length})
       </Typography>
-
       <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
         {issues.map((issue) => (
           <Card

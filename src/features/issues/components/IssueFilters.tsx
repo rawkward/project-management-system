@@ -32,7 +32,7 @@ export const IssueFilters = ({
 
   return (
     <Box sx={{ mb: 4 }}>
-      <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+      <Box>
         <TextField
           label="Поиск"
           value={filters.search}

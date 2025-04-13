@@ -76,26 +76,15 @@ export const IssueModal = ({
     issue?.boardId ?? modalState?.currentBoardId ?? params.id;
 
   useEffect(() => {
-    if (open && issue) {
-      reset({
-        title: issue.title,
-        description: issue.description,
-        priority: issue.priority,
-        status: issue.status,
-        boardId: issue.boardId,
-        assigneeId: issue.assigneeId,
-      });
-    } else if (open && !issue) {
-      reset({
-        title: "",
-        description: "",
-        priority: "Low",
-        status: "Backlog",
-        boardId: selectedBoardId ? Number(selectedBoardId) : 0,
-        assigneeId: 0,
-      });
+    if (open) {
+      const localData = localStorage.getItem(DRAFT_KEY);
+      if (localData && !issue) {
+        reset(JSON.parse(localData));
+      } else if (issue) {
+        reset(issue);
+      }
     }
-  }, [open, issue, reset, selectedBoardId]);
+  }, [open, issue, reset]);
 
   useEffect(() => {
     if (sourcePage === "boards" && selectedBoardId) {

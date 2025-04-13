@@ -1,10 +1,8 @@
-import { useEffect, useMemo } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
+import { useForm, UseFormReturn } from "react-hook-form";
 import { IssueFormValues } from "../types";
-import { IssueSchema } from "@/features/issues/model/schema.ts";
 
-export const DRAFT_KEY = "issue-draft";
+export const DRAFT_KEY = "issueDraft";
 
 export const initialEmptyForm: IssueFormValues = {
   title: "",
@@ -15,29 +13,24 @@ export const initialEmptyForm: IssueFormValues = {
   assigneeId: 0,
 };
 
-export const useDraftIssue = (issue?: IssueFormValues) => {
-  const isCreate = !issue;
-
-  const draftValues = useMemo(() => {
-    const draft = localStorage.getItem(DRAFT_KEY);
-    return draft ? JSON.parse(draft) : {};
-  }, []);
+export const useDraftIssue = (
+  initialValues?: IssueFormValues,
+): UseFormReturn<IssueFormValues> => {
+  const getInitialFormData = (): IssueFormValues => {
+    const localData = localStorage.getItem(DRAFT_KEY);
+    return localData ? JSON.parse(localData) : initialValues || initialEmptyForm;
+  };
 
   const form = useForm<IssueFormValues>({
-    defaultValues: isCreate
-      ? { ...initialEmptyForm, ...draftValues }
-      : { ...initialEmptyForm, ...issue },
-    resolver: zodResolver(IssueSchema),
+    defaultValues: getInitialFormData(),
   });
 
   useEffect(() => {
-    if (isCreate) {
-      const subscription = form.watch((values) => {
-        localStorage.setItem(DRAFT_KEY, JSON.stringify(values));
-      });
-      return () => subscription.unsubscribe();
-    }
-  }, [form, isCreate]);
+    const subscription = form.watch((data) => {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
 
   return form;
 };

@@ -1,11 +1,11 @@
 export default {
   testEnvironment: "jsdom",
-  setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.mjs"],
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
   },
   transform: {
-    "^.+\\.(t|j)sx?$": "babel-jest",
+    "^.+\\.[tj]sx?$": ["babel-jest", { presets: ["@babel/preset-env", "@babel/preset-react", "@babel/preset-typescript"] }]
   },
   transformIgnorePatterns: ["/node_modules/(?!(@dnd-kit|@emotion|@mui)/)"],
 };

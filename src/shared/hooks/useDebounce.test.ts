@@ -1,17 +1,18 @@
 import { renderHook, act } from "@testing-library/react";
 import { useDebounce } from "./useDebounce";
+import { vi } from "vitest";
 
 describe("useDebounce", () => {
   beforeAll(() => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
   });
 
   afterEach(() => {
-    jest.clearAllTimers();
+    vi.clearAllTimers();
   });
 
   afterAll(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   it("should return initial value immediately", () => {
@@ -32,12 +33,12 @@ describe("useDebounce", () => {
     });
 
     act(() => {
-      jest.advanceTimersByTime(400);
+      vi.advanceTimersByTime(400);
     });
     expect(result.current).toBe("first");
 
     act(() => {
-      jest.advanceTimersByTime(100);
+      vi.advanceTimersByTime(100);
     });
     expect(result.current).toBe("second");
   });

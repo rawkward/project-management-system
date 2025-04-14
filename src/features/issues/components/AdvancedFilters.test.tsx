@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { AdvancedFilters } from "./AdvancedFilters";
 import { Board } from "@/features/boards/types.ts";
+import { vi } from "vitest";
 
 describe("AdvancedFilters", () => {
   const boards: Board[] = [
@@ -9,7 +10,7 @@ describe("AdvancedFilters", () => {
   ];
 
   it("should toggle filters visibility", () => {
-    const mockFn = jest.fn();
+    const mockFn = vi.fn();
     render(
       <AdvancedFilters
         boards={boards}
@@ -24,7 +25,7 @@ describe("AdvancedFilters", () => {
   });
 
   it("should apply status filter", async () => {
-    const mockFn = jest.fn();
+    const mockFn = vi.fn();
     render(
       <AdvancedFilters
         boards={boards}
@@ -44,7 +45,7 @@ describe("AdvancedFilters", () => {
   });
 
   it("should apply board filter", async () => {
-    const mockFn = jest.fn();
+    const mockFn = vi.fn();
     render(
       <AdvancedFilters
         boards={boards}

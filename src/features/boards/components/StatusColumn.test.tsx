@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { StatusColumn } from "./StatusColumn";
 import { Issue } from "@/features/issues/types";
+import { vi } from "vitest";
 
 const mockIssue: Issue = {
   id: 1,
@@ -20,7 +21,7 @@ describe("StatusColumn", () => {
       <StatusColumn
         status="Backlog"
         issues={[mockIssue]}
-        onIssueClick={jest.fn()}
+        onIssueClick={vi.fn()}
       />,
     );
 

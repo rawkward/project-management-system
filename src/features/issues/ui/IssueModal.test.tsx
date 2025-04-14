@@ -4,10 +4,11 @@ import { IssueModal } from "./IssueModal";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router";
 import { Issue } from "@/features/issues/types.ts";
+import { vi } from "vitest";
 
-jest.mock("../api/issue-api", () => ({
-  createIssue: jest.fn().mockResolvedValue(100),
-  fetchIssue: jest.fn().mockResolvedValue({
+vi.mock("../api/issue-api", () => ({
+  createIssue: vi.fn().mockResolvedValue(100),
+  fetchIssue: vi.fn().mockResolvedValue({
     id: 100,
     title: "Новая задача",
     description: "",
@@ -18,18 +19,18 @@ jest.mock("../api/issue-api", () => ({
     assigneeFullName: "Olga",
     boardName: "Backend API",
   }),
-  updateIssue: jest.fn().mockResolvedValue({}),
+  updateIssue: vi.fn().mockResolvedValue({}),
 }));
 
-jest.mock("@/features/boards/api/board-api.ts", () => ({
-  fetchBoards: jest.fn().mockResolvedValue([
+vi.mock("@/features/boards/api/board-api.ts", () => ({
+  fetchBoards: vi.fn().mockResolvedValue([
     { id: 1, name: "Avito Frontend" },
     { id: 2, name: "Backend API" },
   ]),
 }));
 
-jest.mock("@/features/users/api/user-api.ts", () => ({
-  fetchUsers: jest.fn().mockResolvedValue([
+vi.mock("@/features/users/api/user-api.ts", () => ({
+  fetchUsers: vi.fn().mockResolvedValue([
     { id: 1, fullName: "Ivan" },
     { id: 2, fullName: "Olga" },
   ]),
@@ -46,12 +47,12 @@ const renderWithProviders = (ui: React.ReactElement) =>
 
 const defaultProps = {
   open: true,
-  onClose: jest.fn(),
+  onClose: vi.fn(),
 };
 
 describe("IssueModal", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("renders modal with default fields", async () => {

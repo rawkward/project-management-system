@@ -1,7 +1,8 @@
 import { fetchBoards } from "./board-api";
 import { apiClient } from "@/shared/api/base-api";
+import { vi, Mock } from "vitest";
 
-jest.mock("@/shared/api/base-api");
+vi.mock("@/shared/api/base-api");
 
 describe("boardApi", () => {
   beforeEach(() => {
@@ -9,7 +10,7 @@ describe("boardApi", () => {
   });
 
   it("should fetch boards", async () => {
-    (apiClient as jest.Mock).mockResolvedValue({
+    (apiClient as Mock).mockResolvedValue({
       data: [{ id: 1, name: "Test Board" }],
     });
 

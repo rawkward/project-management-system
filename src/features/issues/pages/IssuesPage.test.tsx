@@ -1,12 +1,13 @@
 import { render, screen } from "@testing-library/react";
 import { IssuesPage } from "./IssuesPage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { vi } from "vitest";
 
 const queryClient = new QueryClient();
 
-jest.mock("@tanstack/react-query", () => ({
-  ...jest.requireActual("@tanstack/react-query"),
-  useQuery: jest.fn().mockReturnValue({
+vi.mock("@tanstack/react-query", async () => ({
+  ...((await vi.importActual("@tanstack/react-query")) as object),
+  useQuery: vi.fn().mockReturnValue({
     data: [],
     isLoading: false,
   }),

@@ -9,24 +9,25 @@ import {
 import { apiClient } from "@/shared/api/base-api";
 import { mapApiIssueToIssue } from "@/features/issues/model/lib/mappers";
 import { IssueFormValues } from "../types";
+import { vi, Mock } from "vitest";
 
-jest.mock("@/shared/api/base-api", () => ({
-  apiClient: jest.fn(),
+vi.mock("@/shared/api/base-api", () => ({
+  apiClient: vi.fn(),
 }));
 
-jest.mock("@/features/issues/model/lib/mappers", () => ({
-  mapApiIssueToIssue: jest.fn((x) => x),
+vi.mock("@/features/issues/model/lib/mappers", () => ({
+  mapApiIssueToIssue: vi.fn((x) => x),
 }));
 
 describe("issue-api", () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe("fetchIssues()", () => {
     it("should fetch and transform issues", async () => {
       const issuesMock = [{ id: 1 }, { id: 2 }];
-      (apiClient as jest.Mock).mockResolvedValue({ data: issuesMock });
+      (apiClient as Mock).mockResolvedValue({ data: issuesMock });
 
       const issues = await fetchIssues();
 
@@ -39,7 +40,7 @@ describe("issue-api", () => {
   describe("fetchIssue()", () => {
     it("should fetch one issue by id and transform it", async () => {
       const apiIssueMock = { id: 1, title: "Test issue" };
-      (apiClient as jest.Mock).mockResolvedValue({ data: apiIssueMock });
+      (apiClient as Mock).mockResolvedValue({ data: apiIssueMock });
 
       const issue = await fetchIssue(1, 10);
 
@@ -66,7 +67,7 @@ describe("issue-api", () => {
         assigneeId: 3
       };
 
-      (apiClient as jest.Mock).mockResolvedValue({ data: { id: 555 } });
+      (apiClient as Mock).mockResolvedValue({ data: { id: 555 } });
 
       const issueId = await createIssue(newIssueData);
 
@@ -116,7 +117,7 @@ describe("issue-api", () => {
   describe("searchIssues()", () => {
     it("should search issues correctly", async () => {
       const issuesMock = [{ id: 5, title: "search me" }];
-      (apiClient as jest.Mock).mockResolvedValue({ data: issuesMock });
+      (apiClient as Mock).mockResolvedValue({ data: issuesMock });
 
       const result = await searchIssues("search me");
 
@@ -132,7 +133,7 @@ describe("issue-api", () => {
     });
 
     it("should return empty array on apiClient error", async () => {
-      (apiClient as jest.Mock).mockRejectedValue(
+      (apiClient as Mock).mockRejectedValue(
         new Error("Something went wrong"),
       );
 

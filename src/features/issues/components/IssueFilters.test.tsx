@@ -2,8 +2,9 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { IssueFilters } from "./IssueFilters";
 import { Board } from "@/features/boards/types.ts";
+import { vi } from "vitest";
 
-jest.mock("./AdvancedFilters", () => ({
+vi.mock("./AdvancedFilters", () => ({
   AdvancedFilters: ({
     boards,
     statusFilter,
@@ -61,11 +62,11 @@ describe("IssueFilters", () => {
   const defaultProps = {
     boards: mockBoards,
     filters: defaultFilters,
-    onFilterChange: jest.fn(),
+    onFilterChange: vi.fn(),
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   test("should render correctly with defaults", () => {
@@ -85,7 +86,7 @@ describe("IssueFilters", () => {
 
     let filters = { ...defaultFilters };
 
-    const handleFilterChange = jest.fn((newFilters) => {
+    const handleFilterChange = vi.fn((newFilters) => {
       filters = newFilters;
     });
 

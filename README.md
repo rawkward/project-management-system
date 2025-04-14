@@ -2,8 +2,10 @@
 
 ### Инструкция по запуску проекта (Docker Compose):
 
-Необходимо установить Docker и Docker Compose, а затем выполнить
-`docker compose up --build`
+1. Установить Docker и Docker Compose, если они еще не установлены;
+2. Создать файл `.env` в корне проекта с содержимым `VITE_API_URL=/api/v1`;
+3. Выполнить команду `docker compose up --build`;
+4. Открыть приложение по адресу http://localhost:3000/.
 
 ## Стек:
 

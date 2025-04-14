@@ -54,7 +54,7 @@ export const BoardPage = () => {
             key={status}
             status={status}
             issues={issues.filter((issue) => issue.status === status)}
-            onIssueClick={handleIssueClick} // используем handleIssueClick
+            onIssueClick={handleIssueClick}
           />
         ))}
       </Box>

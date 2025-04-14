@@ -32,7 +32,7 @@ export const useDraftIssue = (
 
   const form = useForm<IssueFormValues>({
     defaultValues: getInitialFormData(),
-    resolver: zodResolver(IssueSchema), // Добавьте zodResolver здесь
+    resolver: zodResolver(IssueSchema),
   });
 
   useEffect(() => {

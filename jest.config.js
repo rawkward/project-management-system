@@ -1,6 +1,5 @@
-module.exports = {
+export default {
   testEnvironment: "jsdom",
-  setupFiles: ["<rootDir>/jest.env-setup.js"], // ⬅️ добавьте эту строчку
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
@@ -8,4 +7,5 @@ module.exports = {
   transform: {
     "^.+\\.(t|j)sx?$": "babel-jest",
   },
+  transformIgnorePatterns: ["/node_modules/(?!(@dnd-kit|@emotion|@mui)/)"],
 };

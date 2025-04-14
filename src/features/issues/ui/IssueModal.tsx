@@ -116,7 +116,7 @@ export const IssueModal = ({
     mutationFn: async (data: IssueFormValues) => {
       if (issue?.id && boardId) {
         await updateIssue(issue.id, data);
-        return fetchIssue(issue.id, boardId); // явно передать сюда boardId дополнительно
+        return fetchIssue(issue.id, boardId);
       } else {
         const newId = await createIssue(data);
         return fetchIssue(newId, data.boardId);

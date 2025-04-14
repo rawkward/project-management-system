@@ -15,6 +15,8 @@ export const initialEmptyForm: IssueFormValues = {
   assigneeId: 0,
 };
 
+// Хук, который управляет состоянием формы задачи и автоматически сохраняет заполненные поля в localStorage
+
 export const useDraftIssue = (
   issue?: IssueFormValues | null,
 ): UseFormReturn<IssueFormValues> => {
@@ -35,6 +37,7 @@ export const useDraftIssue = (
     resolver: zodResolver(IssueSchema),
   });
 
+  // Автосохранение формы в localStorage при изменении полей
   useEffect(() => {
     if (isEditMode) return;
 

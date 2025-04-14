@@ -1,54 +1,76 @@
-# React + TypeScript + Vite
+# Project Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### Инструкция по запуску проекта (Docker Compose):
 
-Currently, two official plugins are available:
+Необходимо установить Docker и Docker Compose, а затем выполнить
+`docker compose up --build`
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Стек:
 
-## Expanding the ESLint configuration
+- React
+- React Router
+- TypeScript
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Дополнительные библиотеки и фреймворки:
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+- Vite
+
+Быстрая сборка, отличная совместимость с другими библиотеками и
+фреймворками. Удобный старт с `create vite@latest`
+
+- Tanstack Query
+
+Удобный синтаксис в сравнении с RTK, кэширование
+
+- React Hook Form
+
+Одно из удобных решений для создания форм, не перегружено функционалом. Интегрируется с
+TypeScript и zod, дает комфортный API для валидации и обработки данных форм.
+
+- Zod
+
+Надежный инструмент и понятный синтаксис для валидации, интеграция с React Hook Form и TypeScript.
+
+- Material UI
+
+Популярная библиотека UI-компонентов, позволяющая быстро создавать
+качественные пользовательские интерфейсы. Готовые адаптивные компоненты, совместимые с
+современными дизайн-гайдами, помогают ускорить разработку.
+
+- ESLint
+
+Обеспечивает единый стиль кода, сокращает количество багов и упрощает код-ревью за счет
+автоматической проверки.
+
+- Prettier
+
+Одной командой форматирует код и приводит его к общепринятому виду.
+
+## О проекте:
+Данный проект реализует простое и наглядное приложение для управления задачами и проектами. Приложение позволяет создавать задачи, просматривать список проектов, задачи в конкретном проекте и управлять состоянием задач.
+
+### Архитектура проекта:
+```src/
+├── app                      # Настройка провайдеров, лэйаута и роутинга
+├── features/                # Основные бизнес-фичи проекта
+│   ├── boards               # Проекты и доски задач
+│   └── issues               # Задачи и связанные с ними компоненты
+├── shared/                  # Общие переиспользуемые компоненты и API-клиенты
+└── ...
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Ключевые компоненты / Хуки:
+- IssueCard\
+Визуальное представление карточки задачи
+- AsyncSelect\
+Универсальный компонент select с поддержкой асинхронной загрузки
+- useDraftIssue\
+Хук для автосохранения формы задачи в localStorage
+- IssueModal\
+Модалка для создания и редактирования задачи
+- useIssueModal\
+Хук для управления состоянием модального окна
+- apiClient\
+Базовый клиент для обращения к API
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```

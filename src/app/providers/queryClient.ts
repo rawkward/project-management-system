@@ -1,10 +1,12 @@
 import { QueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/shared/api/base-api.ts";
 
+// Базовая конфигурация QueryClient для react-query с заранее определёнными параметрами для запросов и мутаций
 const createQueryClient = () => {
   return new QueryClient({
     defaultOptions: {
       queries: {
+        // Универсальная функция запроса по умолчанию (использует apiClient)
         queryFn: async ({ queryKey: [url], signal }) => {
           if (typeof url !== "string") {
             throw new Error("Invalid queryKey");
@@ -13,6 +15,7 @@ const createQueryClient = () => {
         },
       },
       mutations: {
+        // Универсальная функция для отправки данных
         mutationFn: async (variables: unknown) => {
           if (
             typeof variables === "object" &&

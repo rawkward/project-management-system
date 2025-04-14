@@ -2,6 +2,8 @@ import { Link, useLocation } from "react-router";
 import { AppBar, Box, Button, Container, Toolbar } from "@mui/material";
 import { useIssueModal } from "@/features/issues/hooks/useIssueModal.ts";
 
+// Хук в хедере вешается на кнопку "Создать задачу" для открытия модального окна
+
 export const Header = () => {
   const { openModal } = useIssueModal();
   const location = useLocation();

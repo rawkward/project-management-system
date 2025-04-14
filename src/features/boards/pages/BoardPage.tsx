@@ -17,6 +17,7 @@ export const BoardPage = () => {
 
   const { data: board, isLoading } = useBoard(Number(id));
 
+  // Получаем список задач текущего проекта, обновляем его раз в минуту
   const { data: issues = [] } = useQuery<Issue[]>({
     queryKey: ["board", Number(id), "issues"],
     queryFn: () => fetchBoardIssues(Number(id)),

@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "@/shared/api/base-api.ts";
 import { Board } from "@/features/boards/types.ts";
 
+// Кастомный хук для получения данных выбранного проекта (board) по id
 export const useBoard = (boardId: number) => {
   return useQuery({
     queryKey: ["board", boardId],

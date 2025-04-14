@@ -48,6 +48,7 @@ export const IssueModal = ({
   const { errors } = formState;
   const queryClient = useQueryClient();
 
+  // Загружаем данные проектов и пользователей для полей выбора
   const { data: boards = [], isLoading: isBoardsLoading } = useQuery({
     queryKey: ["boards"],
     queryFn: fetchBoards,
@@ -72,11 +73,13 @@ export const IssueModal = ({
 
   const params = useParams<{ id: string }>();
 
+  // Определяем выбранный проект: либо из задачи, либо из модального состояния, либо из URL
   const selectedBoardId =
     issue?.boardId ?? modalState?.currentBoardId ?? params.id;
 
   const navigate = useNavigate();
 
+  // Инициализируем форму данными из localStorage (если создаем новую задачу) или переданной в редактирование задачи
   useEffect(() => {
     if (open) {
       const localData = localStorage.getItem(DRAFT_KEY);
@@ -88,6 +91,7 @@ export const IssueModal = ({
     }
   }, [open, issue, reset]);
 
+  // Автоматически подставляем выбранный проект, если модалка была открыта со страницы конкретного проекта
   useEffect(() => {
     if (sourcePage === "boards" && selectedBoardId) {
       form.setValue("boardId", Number(selectedBoardId));
@@ -98,6 +102,7 @@ export const IssueModal = ({
     try {
       const updatedIssue = await mutateAsync(data);
 
+      // Сохраняем созданную задачу в кеш (если она новая) и очищаем localStorage от черновика
       if (!issue) {
         queryClient.setQueryData<Issue[]>(["issues"], (old) =>
           old ? [...old, updatedIssue] : [updatedIssue],
@@ -112,6 +117,7 @@ export const IssueModal = ({
 
   const boardId = issue?.boardId;
 
+  // Mutation для создания или обновления задач
   const { mutateAsync } = useMutation({
     mutationFn: async (data: IssueFormValues) => {
       if (issue?.id && boardId) {

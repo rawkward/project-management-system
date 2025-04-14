@@ -19,6 +19,9 @@ type AsyncSelectProps<T extends FieldValues> = {
   textFieldProps?: TextFieldProps;
 };
 
+// Переиспользуемый компонент на react-hook-form и Material UI,
+// позволяет выбирать значение из списка опций, поддерживает асинхронную загрузку данных.
+
 export const AsyncSelect = <T extends FieldValues>({
   control,
   name,
